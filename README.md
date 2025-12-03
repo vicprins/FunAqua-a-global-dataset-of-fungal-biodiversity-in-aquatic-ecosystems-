@@ -54,21 +54,21 @@ The versions of the software and packages used in the pipeline is included in th
 #### Pipeline dependencies
 The following packages are required for the .R script:
 
-1. tiyverse/dplyr (Required for basic data manipulation, included in CRAN)
-2. tidyverse/tidyverse (Required for basic data manipulation and graph generation, included in CRAN)
-3. trevorld/ggpattern (Required for producing side-by-side bar charts with a patterned aesthetic)
-4. rstudio/DT (Required for producing interactive tables)
-5. joey711/phyloseq (Required for easier community data manipulation)
-6. vegandevs/vegan (Required for generating rarefaction curves)
-7. r-spatial/sf (Required for drawing the map depicting sampling plots, included in CRAN)
-8. andysouth/rworldmap (Required for drawing the map depicting sampling plots, included in CRAN)
-9. ropensci/rnaturalearth (Required for drawing the map depicting sampling plots)
-10. kassambara/ggpubr (Required for combining the heatmap plots together, included in CRAN)
+	1. tiyverse/dplyr (Required for basic data manipulation, included in CRAN)
+	2. tidyverse/tidyverse (Required for basic data manipulation and graph generation, included in CRAN)
+	3. trevorld/ggpattern (Required for producing side-by-side bar charts with a patterned aesthetic)
+	4. rstudio/DT (Required for producing interactive tables)
+	5. joey711/phyloseq (Required for easier community data manipulation)
+	6. vegandevs/vegan (Required for generating rarefaction curves)
+	7. r-spatial/sf (Required for drawing the map depicting sampling plots, included in CRAN)
+	8. andysouth/rworldmap (Required for drawing the map depicting sampling plots, included in CRAN)
+	9. ropensci/rnaturalearth (Required for drawing the map depicting sampling plots)
+	10. kassambara/ggpubr (Required for combining the heatmap plots together, included in CRAN)
 
 To run the markdown script, you additionally need:
-11. rstudio/rmarkdown (Required to execute and write markdown scripts in R, included in CRAN)
-12. haozhu233/kableExtra (Required for customizing interactive tables)
-13. rstudio/leaflet (Required for generating interactive maps, included in CRAN)
+	11. rstudio/rmarkdown (Required to execute and write markdown scripts in R, included in CRAN)
+	12. haozhu233/kableExtra (Required for customizing interactive tables)
+	13. rstudio/leaflet (Required for generating interactive maps, included in CRAN)
 
 To install the required packages, execute this code:
 ```
