@@ -25,23 +25,40 @@ The repository includes two .html files "blahblah/blahblah", and "blahblah/blahb
 The pipeline is divided into the following sections:
 1.  File preparation steps
 	1. Package importing
+	
 	2. File validation
+	
 	3. OTU and sequence count addition to the metadata table
+	
 	4. Phyloseq object construction
+	
 	5. Subsetting the dataset into sediment and water data
+
 2. General data overview
 	1.  Short overview of the number of samples in the dataset
+	
 	2. Geographic overview 
+		
 		1. Overview of represented countries
+		
 		2. Overview of sampled continents
+	
 	3. Biome overview
+		
 		1. Overview of sampled biomes
+		
 		2. Overview of biome sampling distribution across continents
+	
 	4. Sequencing data overview
+		
 		1. General overview of the fungal and non-fungal sequence numbers and OTUs
+		
 		2. Comparison of the fungal and non-fungal OTU and sequence abundance in sediment and filtered water samples
+		
 		3. General sequencing depth overview
+		
 		4. Overview of continent-specific sequencing depth
+		
 		5. Overview of biome-specific sequencing depth
 
 
@@ -54,16 +71,25 @@ The versions of the software and packages used in the pipeline is included in th
 #### Pipeline dependencies
 The following packages are required for the .R script:
 
-	1. tiyverse/dplyr (Required for basic data manipulation, included in CRAN)
-	2. tidyverse/tidyverse (Required for basic data manipulation and graph generation, included in CRAN)
-	3. trevorld/ggpattern (Required for producing side-by-side bar charts with a patterned aesthetic)
-	4. rstudio/DT (Required for producing interactive tables)
-	5. joey711/phyloseq (Required for easier community data manipulation)
-	6. vegandevs/vegan (Required for generating rarefaction curves)
-	7. r-spatial/sf (Required for drawing the map depicting sampling plots, included in CRAN)
-	8. andysouth/rworldmap (Required for drawing the map depicting sampling plots, included in CRAN)
-	9. ropensci/rnaturalearth (Required for drawing the map depicting sampling plots)
-	10. kassambara/ggpubr (Required for combining the heatmap plots together, included in CRAN)
+1. tiyverse/dplyr (Required for basic data manipulation, included in CRAN)
+
+2. tidyverse/tidyverse (Required for basic data manipulation and graph generation, included in CRAN)
+
+3. trevorld/ggpattern (Required for producing side-by-side bar charts with a patterned aesthetic)
+
+4. rstudio/DT (Required for producing interactive tables)
+
+5. joey711/phyloseq (Required for easier community data manipulation)
+
+6. vegandevs/vegan (Required for generating rarefaction curves)
+
+7. r-spatial/sf (Required for drawing the map depicting sampling plots, included in CRAN)
+
+8. andysouth/rworldmap (Required for drawing the map depicting sampling plots, included in CRAN)
+
+9. ropensci/rnaturalearth (Required for drawing the map depicting sampling plots)
+
+10. kassambara/ggpubr (Required for combining the heatmap plots together, included in CRAN)
 
 To run the markdown script, you additionally need:
 	11. rstudio/rmarkdown (Required to execute and write markdown scripts in R, included in CRAN)
