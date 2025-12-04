@@ -25,7 +25,7 @@ The repository includes two .html files "blahblah/blahblah", and "blahblah/blahb
 
 The pipeline is divided into the following sections:
 
-** 1.  File preparation steps **
+1.  File preparation steps 
    
    1.1 Package importing
    
@@ -37,7 +37,7 @@ The pipeline is divided into the following sections:
    
    1.5 Subsetting the dataset into sediment and water data
 
-** 2. General data overview **
+ 2. General data overview 
    
    2.1  Short overview of the number of samples in the dataset
    
