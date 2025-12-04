@@ -50,21 +50,21 @@ The pipeline is divided into the following sections:
 
    2.3 Biome overview
 		
-   	2.3.1 Overview of sampled biomes
+   	* Overview of sampled biomes
 
-   	2.3.2 Overview of biome sampling distribution across continents
+   	* Overview of biome sampling distribution across continents
 
    2.4 Sequencing data overview
 		
-   	2.4.1 General overview of the fungal and non-fungal sequence numbers and OTUs
+   	* General overview of the fungal and non-fungal sequence numbers and OTUs
 		
-   	2.4.2 Comparison of the fungal and non-fungal OTU and sequence abundance in sediment and filtered water samples
+   	* Comparison of the fungal and non-fungal OTU and sequence abundance in sediment and filtered water samples
 		
-   	2.4.3 General sequencing depth overview
+   	* General sequencing depth overview
 		
-   	2.4.4 Overview of continent-specific sequencing depth
+   	* Overview of continent-specific sequencing depth
 		
-   	2.4.5 Overview of biome-specific sequencing depth
+   	* Overview of biome-specific sequencing depth
 
 
 The pipeline also included commented lines for the purpose of saving generated plots. To save the plots that you are generating, uncomment those lines.
