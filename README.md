@@ -44,7 +44,8 @@ The repository also includes two example HTML outputs generated with the markdow
 
 The pipeline is divided into the following sections:
 
-
+<details> <summary>Pipeline sections</summary>
+	
 1. File preparation steps 
 
     1.1 Package importing
@@ -85,8 +86,9 @@ The pipeline is divided into the following sections:
 		
    	* Overview of biome-specific sequencing depth
 
+</details> 
 
-The pipeline also included commented lines for the purpose of saving generated plots. To save the plots that you are generating, uncomment those lines.
+The pipeline includes commented lines for saving generated plots. To save your plots, simply uncomment these lines before running the script.
 
 The versions of the software and packages used in the pipeline is included in the file (blahblahblah2/blahblahblah3)
 
