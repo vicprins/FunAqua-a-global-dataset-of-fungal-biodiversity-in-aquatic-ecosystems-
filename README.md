@@ -176,9 +176,9 @@ When running the pipeline with the smaller example files provided in the reposit
 #### Usage notes
 
 Before starting the pipeline, confirm the following:
-1. ✅The required packages are installed
-2. ✅All of the files are present in your working directory
-3. ✅The file names are correct
+1. ✅ The required packages are installed
+2. ✅ All of the files are present in your working directory
+3. ✅ The file names in the script are correct 
 
 </details>
 
