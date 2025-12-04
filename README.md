@@ -5,7 +5,9 @@
   FunAqua: a global dataset of fungal biodiversity in aquatic ecosystems
 </h1>
 ## Introduction
+
 [mapikene]
+
  It is known that fungi have an impact on aquatic food webs as decomposers, regulate toxic algal blooms via parasitism, and can be mutualists in lichens and on the roots of hydrophytes. However, research on them has previously been limited in comparison to terrestrial fungi and other aquatic microorganisms.
 
 Established in 2018 as a collaborative project between the University of Tartu and the Estonian University of Life Sciences, the FunAqua project aims to:
