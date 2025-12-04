@@ -1,5 +1,3 @@
-# FunAqua-a-global-dataset-of-fungal-biodiversity-in-aquatic-ecosystems-
-
 
 <h1 style="text-align:center;">
   FunAqua: a global dataset of fungal biodiversity in aquatic ecosystems
