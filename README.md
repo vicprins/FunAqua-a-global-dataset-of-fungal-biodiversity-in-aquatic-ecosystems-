@@ -149,11 +149,16 @@ install.packages("leaflet")
 <details> <summary> Hardware recommendations</summary>
 	
 #### Hardware recommendations
-It is recommended that the code is executed on an RStudio server due to the high computational requirements in the sequencing depth section, namely the rarefaction curve generation. The minimal recommended RAM for the pipeline is 32GB, as during the rarefaction curve generation, the RAM usage can rise up to 25GB. In idle, the pipeline uses up around 18-20 GB of RAM. The R environment with all of the data produced in the pipeline takes up around 4GB of disk space
+It is recommended to run the pipeline on an RStudio Server due to the high computational requirements, particularly during the sequencing depth analysis (e.g., rarefaction curve generation).
 
-The pipeline is largely constructed in a way where the amount of data stored in the R environment is as minimal as possible. This means that data manipulation is done in the data's calling function wherever feasible (for example, contingency tables are generated inside a ggplot() function instead of generating and saving it for use beforehand).
+* Minimum recommended RAM: 32 GB
 
-The RMarkdown document does not save any files into the R environment. 
+* RAM usage: Up to ~25 GB during rarefaction curve generation; ~18–20 GB when idle
+
+* Disk space: The R environment with all data produced by the pipeline requires approximately 4 GB
+
+The pipeline is designed to minimize the amount of data stored in the R environment. Wherever possible, data manipulation is performed within the calling function rather than pre-generating and saving intermediate objects. For example, contingency tables are created directly inside ggplot() calls instead of being stored beforehand.
+Note: The RMarkdown document does not save any files into the R environment.
 
 </details>
 
