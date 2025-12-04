@@ -77,7 +77,10 @@ The versions of the software and packages used in the pipeline is included in th
 
 </details>
 
+<details> <summary>Running the pipeline</summary>
+	
 ### Running the pipeline(s)
+
 #### Pipeline dependencies
 
 The following packages are required for the .R script:
@@ -125,6 +128,8 @@ install.packages("rmarkdown")
 install.packages("kableExtra")
 install.packages("leaflet")
 ```
+
+</details>
 #### Hardware recommendations
 It is recommended that the code is executed on an RStudio server due to the high computational requirements in the sequencing depth section, namely the rarefaction curve generation. The minimal recommended RAM for the pipeline is 32GB, as during the rarefaction curve generation, the RAM usage can rise up to 25GB. In idle, the pipeline uses up around 18-20 GB of RAM. 
 
