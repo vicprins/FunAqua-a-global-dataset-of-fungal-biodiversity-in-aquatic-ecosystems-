@@ -24,6 +24,7 @@ The pipeline is shared as two different files: an .R script (filename), and an R
 The repository includes two .html files "blahblah/blahblah", and "blahblah/blahblah2", which are example outputs of the pipeline. "blahblah/blahblah" shows the output of the pipeline when its ran on the entire dataset.  "blahblah/blahblah2" shows the output of the pipeline based on the smaller example datasets provided in the repository.
 
 The pipeline is divided into the following sections:
+
 1.  File preparation steps
    
 	1. Package importing
@@ -72,6 +73,7 @@ The versions of the software and packages used in the pipeline is included in th
 
 ### Running the pipeline(s)
 #### Pipeline dependencies
+
 The following packages are required for the .R script:
 
 1. tiyverse/dplyr (Required for basic data manipulation, included in CRAN)
@@ -95,9 +97,12 @@ The following packages are required for the .R script:
 10. kassambara/ggpubr (Required for combining the heatmap plots together, included in CRAN)
 
 To run the markdown script, you additionally need:
-	11. rstudio/rmarkdown (Required to execute and write markdown scripts in R, included in CRAN)
-	12. haozhu233/kableExtra (Required for customizing interactive tables)
-	13. rstudio/leaflet (Required for generating interactive maps, included in CRAN)
+
+11. rstudio/rmarkdown (Required to execute and write markdown scripts in R, included in CRAN)
+
+12. haozhu233/kableExtra (Required for customizing interactive tables)
+
+13. rstudio/leaflet (Required for generating interactive maps, included in CRAN)
 
 To install the required packages, execute this code:
 ```
