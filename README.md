@@ -26,25 +26,6 @@ The repository includes two .html files "blahblah/blahblah", and "blahblah/blahb
 The pipeline is divided into the following sections:
 
 
-::: {.list}
-1. File preparation steps
-    1. Package importing
-    1. File validation
-    1. OTU and sequence count addition to the metadata table
-    1. Phyloseq object construction
-    1. Subsetting the dataset into sediment and water data
-
-2. General data overview
-    1. Short overview of the number of samples in the dataset
-    1. Geographic overview
-        1. Overview of represented countries
-        1. Overview of sampled continents
-    1. Biome overview
-        1. Overview of sampled biomes
-        1. Overview of biome sampling distribution across continents
- 
-:::
-
 1. File preparation steps 
 
     1.1 Package importing
@@ -62,10 +43,10 @@ The pipeline is divided into the following sections:
     2.1 Short overview of the number of samples in the dataset
 
     2.2 Geographic overview
-
-        2.2.1 Overview of represented countries
-
-   	2.2.2 Overview of sampled continents
+	
+	⋅⋅⋅⋅* Overview of represented countries
+	
+	⋅⋅⋅⋅* Overview of sampled continents
 
    2.3 Biome overview
 		
