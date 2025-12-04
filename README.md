@@ -27,15 +27,15 @@ The pipeline is divided into the following sections:
 
 1.  File preparation steps
    
-		1. Package importing
+	1.1. Package importing
 	
-		2. File validation
+	1.2. File validation
 	
-		3. OTU and sequence count addition to the metadata table
+	1.3. OTU and sequence count addition to the metadata table
 	
-		4. Phyloseq object construction
+	1.4. Phyloseq object construction
 	
-		5. Subsetting the dataset into sediment and water data
+	1.5. Subsetting the dataset into sediment and water data
 
 2. General data overview
    
