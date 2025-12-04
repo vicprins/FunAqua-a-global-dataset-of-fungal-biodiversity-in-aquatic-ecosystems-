@@ -149,7 +149,8 @@ install.packages("leaflet")
 <details> <summary> Hardware recommendations</summary>
 	
 #### Hardware recommendations
-It is recommended to run the pipeline on an RStudio Server due to the high computational requirements, particularly during the sequencing depth analysis (e.g., rarefaction curve generation).
+
+When running the pipeline on a large dataset, such as the FunAqua one, it is recommended to run the pipeline on an RStudio Server due to the high computational requirements, particularly during the sequencing depth analysis (e.g., rarefaction curve generation).
 
 * Minimum recommended RAM: 32 GB
 
