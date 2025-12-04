@@ -44,9 +44,9 @@ The pipeline is divided into the following sections:
 
     2.2 Geographic overview
 	
-	⋅⋅⋅⋅* Overview of represented countries
+	* Overview of represented countries
 	
-	⋅⋅⋅⋅* Overview of sampled continents
+	* Overview of sampled continents
 
    2.3 Biome overview
 		
