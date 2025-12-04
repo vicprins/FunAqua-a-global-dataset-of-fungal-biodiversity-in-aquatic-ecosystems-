@@ -27,8 +27,6 @@ The pipeline is divided into the following sections:
 
 
 ::: {.list}
-The pipeline is divided into the following sections:
-
 1. File preparation steps
     1. Package importing
     1. File validation
