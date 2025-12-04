@@ -77,11 +77,9 @@ The versions of the software and packages used in the pipeline is included in th
 
 </details>
 
-<details> <summary>Running the pipeline</summary>
+<details> <summary>Pipeline dependencies</summary>
 	
-### Running the pipeline(s)
-
-#### Pipeline dependencies
+### Pipeline dependencies
 
 The following packages are required for the .R script:
 
