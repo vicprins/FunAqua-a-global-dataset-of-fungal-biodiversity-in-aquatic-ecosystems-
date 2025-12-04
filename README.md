@@ -29,41 +29,41 @@ The pipeline is divided into the following sections:
    
 	1. Package importing
 	
-	2. File validation
+	1. File validation
 	
-	3. OTU and sequence count addition to the metadata table
+	1. OTU and sequence count addition to the metadata table
 	
-	4. Phyloseq object construction
+	1. Phyloseq object construction
 	
-	5. Subsetting the dataset into sediment and water data
+	1. Subsetting the dataset into sediment and water data
 
 2. General data overview
    
 	1.  Short overview of the number of samples in the dataset
 	
-	2. Geographic overview 
+	1. Geographic overview 
 		
 		1. Overview of represented countries
 		
-		2. Overview of sampled continents
+		1. Overview of sampled continents
 	
-	3. Biome overview
+	1. Biome overview
 		
 		1. Overview of sampled biomes
 		
-		2. Overview of biome sampling distribution across continents
+		1. Overview of biome sampling distribution across continents
 	
-	4. Sequencing data overview
+	1. Sequencing data overview
 		
 		1. General overview of the fungal and non-fungal sequence numbers and OTUs
 		
-		2. Comparison of the fungal and non-fungal OTU and sequence abundance in sediment and filtered water samples
+		1. Comparison of the fungal and non-fungal OTU and sequence abundance in sediment and filtered water samples
 		
-		3. General sequencing depth overview
+		1. General sequencing depth overview
 		
-		4. Overview of continent-specific sequencing depth
+		1. Overview of continent-specific sequencing depth
 		
-		5. Overview of biome-specific sequencing depth
+		1. Overview of biome-specific sequencing depth
 
 
 The pipeline also included commented lines for the purpose of saving generated plots. To save the plots that you are generating, uncomment those lines.
