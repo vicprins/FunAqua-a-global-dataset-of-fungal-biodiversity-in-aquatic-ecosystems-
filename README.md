@@ -42,8 +42,7 @@ The pipeline is divided into the following sections:
    2.1 Short overview of the number of samples in the dataset
    
    2.2 Geographic overview
-
-   	2.2.1 Overview of represented countries
+		2.2.1 Overview of represented countries
 
    	2.2.2 Overview of sampled continents
 
