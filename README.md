@@ -25,9 +25,8 @@ The repository includes two .html files "blahblah/blahblah", and "blahblah/blahb
 
 The pipeline is divided into the following sections:
 
-1.  File preparation steps 
-   
-   1.1 Package importing
+1. File preparation steps 
+    1.1 Package importing
    
    1.2 File validation
    
@@ -39,9 +38,10 @@ The pipeline is divided into the following sections:
 
  2. General data overview 
    
-   2.1  Short overview of the number of samples in the dataset
+   2.1 Short overview of the number of samples in the dataset
    
    2.2 Geographic overview
+   
      2.2.1 Overview of represented countries
 
    		2.2.2 Overview of sampled continents
