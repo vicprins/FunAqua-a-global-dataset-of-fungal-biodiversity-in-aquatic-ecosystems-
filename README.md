@@ -88,7 +88,7 @@ The pipeline is divided into the following sections:
 
 The pipeline includes commented lines for saving generated plots. To save your plots, simply uncomment these lines before running the script.
 
-The versions of the software and packages used in the pipeline is included in the file (blahblahblah2/blahblahblah3)
+The versions of the software and packages used in the pipeline is included in the file [session_info.txt](./session_info.txt)
 
 </details>
 
