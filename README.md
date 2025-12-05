@@ -5,7 +5,7 @@
 
 ## Introduction
 
-[mapikene]
+![FunAqua map](visuals/samplingmap.png)
 
 Fungi are known to influence aquatic food webs as decomposers, regulate toxic algal blooms through parasitism, and form mutualistic associations in lichens and on the roots of hydrophytes. Despite these roles, research on aquatic fungi has historically been limited compared to studies on terrestrial fungi and other aquatic microorganisms.
 Established in 2018 as a collaborative initiative between the University of Tartu and the Estonian University of Life Sciences, the FunAqua project aims to:
