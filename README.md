@@ -191,6 +191,10 @@ When using the example dataset or other data, additionally confirm:
 
 ## Data availability
 
+The dataset together with sample metadata, OTU data and taxonomic classifications is available on zenodo (link)
+
+The raw sequencing data is available on European Nucleotide Archive (link)
+
 ## Citation
 
 ##
