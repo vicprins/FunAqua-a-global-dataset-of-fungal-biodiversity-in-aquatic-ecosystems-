@@ -165,9 +165,7 @@ Note: The RMarkdown document does not save any files into the R environment.
 	
 #### The example files
 
-This repository contains smaller example files for pipeline testing. The samples were chosen to ensure continental representativity, meaning each continent is represented in proportion to its share of the overall dataset.
-
-When running the pipeline with the smaller example files provided in the repository, please change the file names in the file import section to their correct names.
+This repository contains smaller [example files](./example_data) for pipeline testing. The samples were chosen to ensure continental representativity, meaning each continent is represented in proportion to its share of the overall dataset. When running the pipeline with the smaller example files, please change the file names in the file import section to their correct names.
 
 </details>
 
