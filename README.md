@@ -167,6 +167,8 @@ Note: The RMarkdown document does not save any files into the R environment.
 	
 #### The example files
 
+This repository contains smaller example files for pipeline testing. The samples were chosen to ensure continental representativity, meaning each continent is represented in proportion to its share of the overall dataset.
+
 When running the pipeline with the smaller example files provided in the repository, please change the file names in the file import section to their correct names.
 
 </details>
@@ -178,7 +180,10 @@ When running the pipeline with the smaller example files provided in the reposit
 Before starting the pipeline, confirm the following:
 1. ✅ The required packages are installed
 2. ✅ All of the files are present in your working directory
-3. ✅ The file names in the script are correct 
+
+When using the example dataset or other data, additionally confirm:
+4. ✅ The file names in the script are correct
+5. ❗ The graphical parameters of the plotting functions are adjusted according to the used data. Currently, there are static values used for adjusting the plot visualisation (for example, axes limits in the rarefaction curve plots, hard-coded range values in  scale_fill_distiller() for heatmaps, etc), which need to be changed according to the data that is being visualised.
 
 </details>
 
