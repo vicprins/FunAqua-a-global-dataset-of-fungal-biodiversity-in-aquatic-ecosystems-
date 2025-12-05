@@ -16,9 +16,9 @@ Established in 2018 as a collaborative initiative between the University of Tart
 
 Currently, the FunAqua dataset includes eukaryotic long-read metabarcoding data from 1,076 sediment samples and 1,299 filtered water samples collected across 1,452 sites in 87 countries. The internal transcribed spacer (ITS) region was targeted, resulting in the identification of 50,152 fungal OTUs. Sequencing data are accompanied by comprehensive metadata, including physicochemical properties of water and sediments. The FunAqua dataset provides a valuable resource for analyzing and understanding fungal biodiversity across diverse aquatic habitats and biogeographical regions.
 
-<details>
-	
 ## The pipeline
+
+<details>
 
 <summary>Pipeline overview</summary>
 
