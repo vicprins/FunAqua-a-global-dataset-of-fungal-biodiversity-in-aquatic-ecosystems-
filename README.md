@@ -178,10 +178,12 @@ When running the pipeline with the smaller example files provided in the reposit
 #### Usage notes
 
 Before starting the pipeline, confirm the following:
+
 1. ✅ The required packages are installed
 2. ✅ All of the files are present in your working directory
 
 When using the example dataset or other data, additionally confirm:
+
 4. ✅ The file names in the script are correct
 5. ❗ The graphical parameters of the plotting functions are adjusted according to the used data. Currently, there are static values used for adjusting the plot visualisation (for example, axes limits in the rarefaction curve plots, hard-coded range values in  scale_fill_distiller() for heatmaps, etc), which need to be changed according to the data that is being visualised.
 
