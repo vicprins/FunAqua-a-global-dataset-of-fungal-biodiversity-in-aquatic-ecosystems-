@@ -18,6 +18,8 @@ Currently, the FunAqua dataset includes eukaryotic long-read metabarcoding data 
 
 <details>
 	
+## The pipeline
+
 <summary>Pipeline overview</summary>
 
 ## Pipeline overview
