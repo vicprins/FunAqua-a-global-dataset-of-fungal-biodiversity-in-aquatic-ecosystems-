@@ -28,7 +28,7 @@ The pipeline deposited in this GitHub repository implements most of the steps de
 
 The pipeline is provided in two formats: 	
 
-* [A .R script](pipeline/FunAqua_R_pipeline.R)
+* [.R script](pipeline/FunAqua_R_pipeline.R)
 
 * [RMarkdown script](pipeline/FunAqua_markdown_pipeline.Rmd)
 
