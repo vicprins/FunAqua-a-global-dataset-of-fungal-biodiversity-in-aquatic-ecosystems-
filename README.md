@@ -189,7 +189,7 @@ When using the example dataset or other data, additionally confirm:
 
 * The dataset together with sample metadata, OTU data and taxonomic classifications is available on Zenodo (tobecited)
 
-* The raw sequencing data is available on European Nucleotide Archive under bioproject XXXX
+* The raw sequencing data are available from the European Nucleotide Archive under BioProject accession number PRJEB104083.
 
 ## Citation
 
