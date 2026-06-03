@@ -12,53 +12,78 @@ date:  "`r format(Sys.time(), '%d %B, %Y')`"
 
 The following document includes R code which was used for data visualization and the generation of the majority of technical validation results under chapters "Sampling coverage" and "Sequencing depth".
 
-The pipeline also generates basic data overview given in the data paper.
+The pipeline also generates a basic data overview given in the data paper.
 
-it is strongly recommended that the user reads through the pipeline's comments before running the document.
+It is strongly recommended that the user reads through the pipeline's comments before running the document.
 
-## 0. Generated files 
+## 0. Generated objects and tables
 
-Where ever possible, the code will generate required data tables inside their calling functions to reduce the amount of the data that is stored. However, in some cases it is more efficient to store the data outside of their functions.
+Where ever possible, the code will generate required data tables inside their calling functions to reduce the amount of the data that is stored. However, in some cases it is more efficient to store the data outside of their functions. In certain situations some objects will be removed from the environment after processing and gc() will be called to remove any residual unused files. 
 
-As a general disclaimer, the recommended minimum amount of RAM for running the script is 32GB, as some of the functions, such as the rarefaction curve calculations, are rather resource-heavy. 
+As a general disclaimer, the recommended minimum amount of RAM for running the script is 40GB, as some of the functions, such as the rarefaction curve calculations, are rather resource-heavy. 
 
-The following files will be generated, but not retained, throughout the code's run for various purposes: 
+The following files will be generated, but not always retained, throughout the code's run for various purposes: 
 
 * **Sample metadata tables as data.frame objects** 
-    * metadata - sample metadata corresponding to all samples 
-    * metadatased - sample metadata for sediments 
-    * metadatawat - sample metadata for filtered water samples 
+    * metadata - sample metadata corresponding to all samples.
+    * metadatased - sample metadata for sediments. 
+    * metadatawat - sample metadata for filtered water samples. 
+    * metadatarenamed - metadata table with the sample ID column added back to it.
 * **OTU tables given as data.frame objects** 
     * eukotu - non-fungal eukaryotes OTU table 
     * fungiotu - fungal OTU table 
-    * eukotused - non-fungal eukaryotes OTU table for OTUs detected in sediments 
-    * fungiotused - fungal OTU table for OTUs detected in sediments 
-    * eukotuwat - non-fungal eukaryotes OTU table for OTUs detected in water samples 
-    * fungiotuwat - fungal OTU table for OTUs detected in water samples 
+    * eukotused - non-fungal eukaryotes OTU table for OTUs detected in sediments. 
+    * fungiotused - fungal OTU table for OTUs detected in sediments. 
+    * eukotuwat - non-fungal eukaryotes OTU table for OTUs detected in water samples. 
+    * fungiotuwat - fungal OTU table for OTUs detected in water samples. 
+    * fungioturenamed - fungal OTU table with the OTU ID column added back to it. Removed in later steps of the pipeline. 
+    * otuwithmeta - fungal OTU table combined with sample metadata and taxonomy data. Removed in later steps of the pipeline.
+    * fungiotulong - fungal OTU table in long format. Meaning there are separate rows for every OTU's occurrence in every sample. Removed in later steps of the pipeline.
 * **Taxonomy tables given as data.frame objects** 
-    * euktax - non-fungal eukaryotes taxonomy table 
-    * fungitax - fungal taxonomy table 
-    * euktaxsed - non-fungal eukaryotes taxonomy table for OTUs found in sediments 
-    * fungitaxsed - fungal taxonomy table for OTUs found in sediments 
-    * euktaxwat - non-fungal eukaryotes taxonomy table for OTUs found in water samples 
-    * fungitaxwat - fungal taxonomy table for OTUs found in water samples 
-    * combinedtax - combined taxonomy table including both fungal and non-fungal OTUs 
+    * euktax - non-fungal eukaryotes taxonomy table. 
+    * fungitax - fungal taxonomy table. 
+    * euktaxsed - non-fungal eukaryotes taxonomy table for OTUs found in sediments. 
+    * fungitaxsed - fungal taxonomy table for OTUs found in sediments. 
+    * euktaxwat - non-fungal eukaryotes taxonomy table for OTUs found in water samples. 
+    * fungitaxwat - fungal taxonomy table for OTUs found in water samples. 
+    * combinedtax - combined taxonomy table including both fungal and non-fungal OTUs. 
+    * fungitaxrenamed - fungal taxonomy table with the OTU ID column added back to it. Removed in later steps of the pipeline. 
+    * fungitaxnamesfixed(sed)(wat) - fungal taxonomy labels clarified for unknown taxa. 3 separate tables for both sample types combined, sediment samples and filtered water samples. 
+    * fungitaxlongnamesfidxed(sed)(wat) - same as previous, but with sequence numbers added to each OTU. 
 * **Phyloseq objects** 
     * fungiphyseq - phyloseq object pertaining to fungal OTU data 
     * eukphyseq - phyloseq object pertaining to non-fungal OTU data 
 * **Objects generated for data visualization purposes **
     * specaccumsed - sediment species (OTU) accumulation data for accumulation curve plotting
     * specaccumwat - filtered water species (OTU) accumulation data for accumulation curve plotting
+    * samplingmapworld - sampling map depicting all of the sampling areas.
+    * Europe - map data for plotting European sampling points.
+    * samplignmapeurope - sampling map depicting the European sampling areas.
+    * samplingmap - combined sampling map.
+    * oturichnesstable - table showing how many unique OTUs were detected on all continents from all samples combined.
+    * oturichnesstable2 - table showing how many unique OTUs were detected on all continents from sediment and filtered water samples separately. 
+    * oturichnesstable3 - same as oturichnesstable, but instead of continents, it looks at biomes. Removed in later steps of the pipeline.
+    * oturichnesstable4 - same as oturichnesstable2, but instead of continents, it looks at biomes. Removed in later steps of the pipeline.
+    * otuwithmetaphylum/class/orderrel - table showing the relative abundance of each fungal phyla's/class'/order's OTUs. Removed in later steps of the pipeline.
+    * sediments - same as previous, but limited to sediment samples. Removed in later steps of the pipeline.
+    * water - same as previous, but limited to water samples. Removed in later steps of the pipeline.
+    * otuphylum/class/orderrelcombined - the previous three tables combined. Removed in later steps of the pipeline.
+    * plot_table - table generated for plotting either fungal phyla/class/order relative abundances. Removed in later steps of the pipeline.
+    * plot_data2 - table generated for plotting the relative abundance of Ascomycota's orders
+    * plot_data3 - table generated for plotting the relative abundance of Basidiomycota's orders.
+    * plot_data4 - table generated for plotting the relative abundance of Chytridiomycota's orders.
+
 
 * **Data for Good's index calculations**
-    * goodsindex - data frame including Good's coverage index values
-    * eukseqtotal - vector used for storing the number of non-fungal sequences detected in samples
-    * euksingletons - vector used for storing the number of non-fungal singletons detected in samples
-    * fungalsingeltons - vector used for storing the number of fungal singletons detected in samples
-    * fungalseqtotal - vector used for storing the number of fungal sequences detected in samples
-    * i - used for iterating through the Good's coverage index calculation cycle
-
-
+    * goodsindex - data frame including Good's coverage index values.
+    * eukseqtotal - vector used for storing the number of non-fungal sequences detected in samples.
+    * euksingletons - vector used for storing the number of non-fungal singletons detected in samples.
+    * fungalsingeltons - vector used for storing the number of fungal singletons detected in samples.
+    * fungalseqtotal - vector used for storing the number of fungal sequences detected in samples.
+    * i - used for iterating through the Good's coverage index calculation cycle.
+* **Functions**
+    * caclrelabun - function created for calculating the relative abundance of OTUs of specified taxonomic level. 
+    * calcrelabun2 - same as above, but keeps information about phyla.
 ## 1. Preparation steps  \
 ### 1.1 Importing required packages
 
@@ -77,10 +102,13 @@ library(rworldmap) # Required for drawing the map depicting sampling plots.
 library(rnaturalearth) # Required for drawing the map depicting sampling plots.
 library(leaflet) # Required for generating interactive maps.
 library(ggpubr) # Required for combining the heatmap plots together.
+library(patchwork) # Required for combining some of the plots together.
+library(microViz) # Required for cleaning up taxonomic identifications.
+library(paletteer) # Required for specifying heat maps' colours.
 ```
 
 ### 1.2 Importing required files \
-In order for the file importing to run smoothly, confirm that the taxonomy, OTU and metadata files are in your working directory.\
+In order for the file import to run smoothly, confirm that the taxonomy, OTU and metadata files are in your working directory.\
 If you are running both the .Rmd file and the provided .R script, these working directories may be different, as the working directory for R Markdown is typically located elsewhere.
 
 ```{r fileImport, message = FALSE, error = TRUE, include = FALSE}
@@ -200,7 +228,7 @@ metadatased <- metadata %>%
   filter(sample_source == "sediment")
 
 # Subsetting the filtered water data from the metadata table.
-metadatawat<- metadata %>% 
+metadatawat <- metadata %>% 
   filter(sample_source == "water")
 
 # Creating sediment and water sample specific fungal taxonomy and OTU tables.
@@ -212,7 +240,7 @@ fungiotused <- fungiotu[c(row.names(metadatased))]
 fungiotused <- fungiotused[rowSums(fungiotused[])>0,]
 
 # Subsetting the fungal OTU data to only include OTU data from water samples.
-fungiotuwat<- fungiotu[c(row.names(metadatawat))]
+fungiotuwat <- fungiotu[c(row.names(metadatawat))]
 
 # Removing the rows (OTUs) which sum to 0 and are thus not present in any water samples.
 fungiotuwat <- fungiotuwat[rowSums(fungiotuwat[])>0,]
@@ -232,7 +260,7 @@ eukotused <- eukotu[c(row.names(metadatased))]
 eukotused <- eukotused[rowSums(eukotused[])>0,]
 
 # Subsetting the non-fungal OTU data to only include OTU data from water samples.
-eukotuwat<- eukotu[c(row.names(metadatawat))]
+eukotuwat <- eukotu[c(row.names(metadatawat))]
 
 # Removing the rows (OTUs) which sum to 0 and are thus not present in any water samples.
 eukotuwat <- eukotuwat[rowSums(eukotuwat[])>0,]
@@ -246,19 +274,19 @@ euktaxwat <- euktax[c(row.names(eukotuwat)),]
 ```
 ## 2. Dataset overview
 
-The following part of the code will give an overview of the data included in the datasets.
+the following section provides an overview of the data included in the dataset.
 
-### 2.1 general overview
+### 2.1 General overview
 
 This section includes a general overview of the number of samples collected.
 
 ```{r genOverview, echo = TRUE, error = TRUE, message = FALSE}
-# Returns the number of samples represented by the database
-cat("The total number of samples in the database: ", nrow(metadata), "\n")
+# Returns the number of samples represented by the dataset
+cat("The total number of samples in the dataset: ", nrow(metadata), "\n")
 
-# Returns the number of sediment and filtered water samples represented by the database
-cat("The total number of sediment samples in the database: ", table(metadata$sample_source)[1], 
-    "\nThe total number of filtered water samples in the database: ", table(metadata$sample_source)[2], "\n")
+# Returns the number of sediment and filtered water samples represented by the dataset
+cat("The total number of sediment samples in the dataset: ", table(metadata$sample_source)[1], 
+    "\nThe total number of filtered water samples in the dataset: ", table(metadata$sample_source)[2], "\n")
 
 # Returns the number of unique sampling plots
 cat("The total number of sampling plots:",
@@ -278,12 +306,12 @@ cat("The number of sampling plots that have both a sediment and filtered water s
 
 #### 2.2.1 Countries
 
-This section includes an overview of the countries sampled for the database.
+This section includes an overview of the countries sampled for the dataset.
 
 ```{r nrOfCountries, echo = TRUE, error = TRUE, message = FALSE}
 
-# Returns the number of countries represented by the database
-cat("The total number of countries represented by the database:",
+# Returns the number of countries represented by the dataset
+cat("The total number of countries represented by the dataset:",
             as.numeric(metadata %>%
               filter(!(country == "Unspecified")) %>%
               summarise(count = n_distinct(country))), "\n")
@@ -295,7 +323,7 @@ The following code generates an interactive table which includes information on 
 
 # Generates an interactive table that shows the number of samples collected from each country.
 # Row names (row numbers) cannot be hidden for this interactive table as the produced table is too large.
-# The table fails to materialize when the row names are hidden.
+# The table fails to render when the row names are hidden.
 
 DT::datatable(metadata %>% # Generating the input table for the interactive table.
                  group_by(country, sample_source) %>% 
@@ -319,22 +347,60 @@ The next part of this section generates a static map of the sampling points.
 
 ```{r staticMap, fig.width = 10, dpi= 300, echo = TRUE, error = TRUE, message = FALSE}
 
-ggplot() +
+# Generates a map for the sampling points
+
+# First the code generated a global view of the sampling points.
+samplingmapworld <- ggplot() +
   # Drawing the base map without any points.
-  geom_sf(data = (ne_countries(scale = "medium", returnclass = "sf")), fill = "darkseagreen1", color = "darkgreen") + 
-  
-  # Adding the sampling points of samples with coordinates preserved onto the map
-  geom_sf(data = (st_as_sf((metadata %>% filter(!is.na(lat) & !is.na(long))), coords = c("long", "lat"), 
+  geom_sf(data = (ne_countries(scale = "medium", 
+                               returnclass = "sf")), 
+          fill = "darkseagreen1", color = "darkgreen") + # Specifying the continents' colour
+  # Adding the sampling points of samples using coordinates.
+  geom_sf(data = (st_as_sf(metadata , coords = c("long", "lat"), 
                            crs = 4326)), 
           shape = 21, fill = "purple", color ="black", stroke = 0.5, size = 2, alpha = 0.2) +
   theme_void() +
-  theme(panel.background = element_rect(fill = "lightcyan"))+
+  labs(title = "a)")+
+  # Adjusting plot margins and specifying the attributes of the plot background.
+  theme(panel.background = element_rect(fill = "lightcyan", colour = NA), 
+        panel.border = element_rect(colour = "black", fill = NA, linewidth = 1),
+        title = element_text(face = "bold"),
+        plot.margin = margin(t = 0, r = 5, b = 0, l = 0)) +
   coord_sf(expand = FALSE)
+
+# Then the code generates a map of the European sampling points.
+# Extracting an European map.
+Europe <- ne_countries(scale = "medium", returnclass = "sf")[which(ne_countries(scale = "medium", returnclass = "sf")$continent == "Europe"),]
+
+# Plotting the map.
+samplingmapeurope <- ggplot() +
+  # Drawing the base map without any points.
+  geom_sf(data = Europe, fill = "darkseagreen1", color = "darkgreen") +
+  # Adding sampling points using coordinates.
+  geom_sf(data = (st_as_sf((metadata %>% filter(continent == "Europe")), 
+                           coords = c("long", "lat"), 
+                           crs = 4326)), 
+          shape = 21, fill = "purple", color ="black", stroke = 0.5, size = 2, alpha = 0.2) +
+  # Resizing the map so it zooms properly into Europe.
+  coord_sf(xlim = c(-30,55), ylim = c(34,84), expand = FALSE) +
+  # Adding figure subtitle
+  labs(title = "b)")+
+  theme_void()+
+  # Adjusting plot margins and specifying the attributes of the plot background.
+  theme(panel.background = element_rect(fill = "lightcyan", colour = NA),
+        panel.border = element_rect(colour = "black", fill = NA, linewidth = 1),
+        plot.margin = margin(t = 0, r = 0, b = 0, l = 0),
+        title = element_text(face = "bold"),
+        panel.spacing = unit(0, "pt")) 
+
+# Combines the two maps together.
+samplingmapworld + samplingmapeurope 
+
 
 ```
 
 The last code of this section returns an interactive map where each point on the map represents a sampling plot.
-Since the database includes a lot of samples, the map will be rather slow to navigate.
+Since the dataset includes a lot of samples, the map will be rather slow to navigate.
 
 <details>
 <summary> Click  here to view the interactive map </summary>
@@ -386,22 +452,25 @@ ggplot(
   data.frame(table(metadata$sample_source, metadata$continent)),
   # x-axis will depict Freq i.e the number of samples.
   # y-axis will depict Var2 (continent) reordered in descending order according to the number of samples collected.
-       aes(x = Freq, y = reorder(Var2,Freq), pattern = Var1))+
+  aes(x = Freq, y = reorder(Var2,Freq),pattern = Var1))+
   # Adjusting the aesthetics of the generated bars.
-  geom_col_pattern(fill = "white", position = position_dodge2(width = 0.5,padding = 0.2), pattern_density = 0.3, 
+  geom_col_pattern(fill = "white",position = position_dodge2(width = 0.5,padding = 0.2),pattern_density = 0.3, 
                    pattern_fill = "black", pattern_spacing = 0.01, colour = "black")+
   # Manually specifying the pattern fill types of the sample types.
   scale_pattern_manual(values =  c("water" = "none", "sediment" = 'circle'),
                        breaks = c("water", "sediment"))+
   # Adding the number of collected samples next to the bars.
-  geom_text(aes(x = Freq, y = Var2, label = Freq, group = Var1),
-            position = position_dodge(width = 1), vjust = 0.5, hjust = -0.25, size = 3.5)+
+  geom_text(aes(x = Freq, y = Var2, label = Freq, group= Var1),
+            position = position_dodge(width = 1), vjust = 0.5, hjust = -0.25, size = 4)+
   # Adding custom labels to the axes and the legend.
   labs(x = "Samples", y = "Continent", pattern = "Sample Type")+
   # Setting the ggplot theme to classic.
   theme_classic()+
   # Changing the size of text.
-  theme(text = element_text(size=13))
+  theme(text = element_text(family = "sans", size = 15),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 10),
+        title = element_text(face = "bold"))
 
 ```
 
@@ -412,8 +481,8 @@ ggplot(
 This section of the pipeline gives an overview of the biome sampling coverage.
 
 ```{r biomeNr, echo = TRUE, error = TRUE, message = FALSE}
-# Returns the total number of biomes represented by the database
-cat("The total number of biomes represented by the database, disregarding unknown biomes:",
+# Returns the total number of biomes represented by the dataset
+cat("The total number of biomes represented by the dataset, disregarding unknown biomes:",
             as.numeric(metadata %>%
               filter(!(biome == "aquatic: other")) %>%
               summarise(count = n_distinct(biome))), "\n")
@@ -455,7 +524,7 @@ ggplot(
   data.frame(table(metadata$sample_source, metadata$biome)),
   # x-axis will depict Freq i.e the number of samples.
   # y-axis will depict Var2 (biome) reordered in descending order according to the number of samples collected.
-       aes(x = Freq, y = reorder(Var2, Freq), pattern = Var1))+
+  aes(x = Freq, y = reorder(Var2, Freq), pattern = Var1))+
   # Removing the substring "aquatic: " from the biome names while graphing.
   scale_y_discrete(labels = function(y) {
     y <- gsub("aquatic: ", "", y)
@@ -465,17 +534,21 @@ ggplot(
   geom_col_pattern(fill = "white",position = position_dodge2(width = 0.5, padding = 0.2), pattern_density = 0.3, 
                    pattern_fill = "black", pattern_spacing = 0.01, colour = "black")+
   # Manually specifying the pattern fill types of the sample types.
-  scale_pattern_manual(values=  c("water" = "none", "sediment" = 'circle'),
+  scale_pattern_manual(values =  c("water" = "none", "sediment" = 'circle'),
                        breaks = c("water", "sediment"))+
   # Adding the number of collected samples next to the bars.
   geom_text(aes(x = Freq, y = Var2, label = Freq, group = Var1),
-            position = position_dodge(width = 1), vjust = 0.5, hjust = -0.25, size = 3.5)+
+            position = position_dodge(width = 1), vjust = 0.5, hjust = -0.25, size = 4)+
   # Adding custom labels to the axes and the legend.
   labs(x = "Samples", y = "Biome", pattern = "Sample Type")+
   # Setting the ggplot theme to classic
   theme_classic()+
   # Adjusting the text size.
-  theme(text = element_text(size = 13))
+  theme(text = element_text(family = "sans", size=15),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 10),
+        title = element_text(face = "bold"))
+
 ```
 
 #### 2.3.2 Biome coverage across continents
@@ -518,7 +591,7 @@ ggplot(data = { # First step: generating the table from which the frequency data
   # palette = "PuBuGn" - the colour gradient flows from purple to blue to green.
   # na.value = "transparent" - tiles of biomes not represented on the continent will be transparent.
   # direction = 1 - putting the sequence of colours in reverse. Defaults to direction = -1.
-  scale_fill_distiller(name = "Samples (%)", palette = "PuBuGn", na.value="transparent", 
+  scale_fill_distiller(name = "Samples (%)", palette = "PuBuGn", na.value = "transparent", 
                        direction = 1) +
   # Replacing the substring "aquatic: " with "" on the y-axis for clarity purposes.
   scale_y_discrete(limits = rev,labels = function(y) {
@@ -862,7 +935,7 @@ quantile((metadata %>% filter(sample_source == "water")
 
 
 
-This next section of the pipeline calculate's Good's coverage estimations.
+This next section of the pipeline calculates Good's coverage estimations.
 
 ```{r goodCov, echo = TRUE, error = TRUE, message = FALSE}
 # Calculating Good's coverage estimations.
@@ -934,7 +1007,7 @@ b) Rarefaction curves of fungi in sediment samples
 c) Rarefaction curves of fungi in filtered water samples
 
 ```{r rareCurve, fig.width = 10, fig.height = 10, dpi = 300, echo = TRUE, error = FALSE, message = FALSE}
-# Initializing the plotting canvas so all of the curves are plotted next to eachother
+
 # Generating rarefaction and species accumulation curves
 
 # Generating an OTU accumulation curve for sediment samples
@@ -957,63 +1030,144 @@ layout(matrix(c(1,2,3,
 
 par(mar = c(6, 8, 4, 2))
 
+#Generating a preview of the plot layouts.
+layout.show(n = 4)
+
 # Generating rarefaction curves for all eukaryotes in all samples
 par(family = "sans") #Specifying the font family.
 
 rarecurve(rbind(fungiotu, eukotu), step = 20, label=FALSE, 
-          col = adjustcolor(c("sediment" = "red", "water" = "blue")[metadata$sample_source], alpha.f = 0.5),
-          xlab = "Eukaryotic sequences", ylab = "Eukaryotic OTUs", lwd = 2,
+          col = adjustcolor(c("sediment" = "red", "water" = "blue")[metadata$sample_source], 
+                            alpha.f = 0.5),
+          xlab =  expression(bold("Eukaryotic sequences")), 
+          ylab =  expression(bold("Eukaryotic OTUs")), 
+          lwd=2,
           xlim = c(0,20000),
           main = "",
           cex.lab = 1.5,
-          cex.axis = 1.5)
-mtext("a)", side = 3, line = 1, adj = 0, cex = 2)
-legend("topright", legend = c("sediment", "water"), col = (c("red", "blue")), lty = 1, lwd = 2)
+          cex.axis = 1.5,
+          xaxt = "n", yaxt = "n") # Removing the x- and y-axis labels to rewrite them later.  
+
+# Specifying the axis ticks' position
+xticks <- axTicks(1)
+# Adding the X-axis tick labels.
+axis(1, at = xticks, labels = format(xticks, big.mark = ","), cex.axis = 1.5)
+
+# Specifying the Y-axis ticks' position.
+yticks <- axTicks(2)
+# Adding the Y-axis tick labels.
+axis(2, at = yticks, labels = format(yticks, big.mark = ","), cex.axis = 1.5)
+
+# Adding the sub-plot title.
+mtext("a)", side = 3, line = 1, adj = 0, cex = 2, font = 2)
+
+legend("topright", legend = c("sediment", "water"), 
+       col = (c("red", "blue")), lty = 1, lwd = 2, cex = 0.85)
 
 # Generating rarefaction curves for fungi in all sediment samples.
-par(family = "sans") #Specifying the font family.
+par(family = "sans") # Specifying the font family.
 
 rarecurve(fungiotused,
-          step = 20, label = FALSE, xlab = "Fungal sequences", ylab = "Fungal OTUs",
+          step = 20, label = FALSE, 
+          xlab =  expression(bold("Fungal sequences")), 
+          ylab =  expression(bold("Fungal OTUs")),
           col = adjustcolor("red", alpha.f = 0.5),
           main = "",
           xlim = c(0,20000),
           cex.lab = 1.5,
           cex.axis = 1.5,
-          lwd = 2)
-mtext("b)", side = 3, line = 1, adj = 0, cex = 2)
+          lwd = 2,
+          xaxt = "n", yaxt = "n") # Removing the x- and y-axis labels to rewrite them later.  
+
+# Specifying the axis ticks' position
+xticks <- axTicks(1)
+# Adding the X-axis tick labels.
+axis(1, at = xticks, labels = format(xticks, big.mark = ","), cex.axis = 1.5)
+
+# Specifying the Y-axis ticks' position.
+yticks <- axTicks(2)
+# Adding the Y-axis tick labels.
+axis(2, at = yticks, labels = format(yticks, big.mark = ","), cex.axis = 1.5)
+
+# Adding the sub-plot title.
+mtext("b)", side = 3, line = 1, adj = 0, cex = 2, font = 2)
 
 # Generating rarefaction curves for fungi in filtered water samples.
-par(family = "sans") #Specifying the font family.
+par(family = "sans") # Specifying the font family.
 
 rarecurve(fungiotuwat,
-          step = 20, label = FALSE, xlab = "Fungal sequences", ylab = "Fungal OTUs",
+          step = 20, label = FALSE, 
+          xlab =  expression(bold("Fungal sequences")), 
+          ylab =  expression(bold("Fungal OTUs")),
           col = adjustcolor("blue", alpha.f = 0.5),
           cex.main = 1.5,
           xlim = c(0,20000),
           cex.lab = 1.5,
           cex.axis = 1.5,
-          lwd = 2)
-mtext("c)", side = 3, line = 1, adj = 0, cex = 2)
+          lwd = 2,
+          xaxt = "n", yaxt = "n") # Removing the x- and y-axis labels to rewrite them later.  
 
-# Plotting the two species accumulation curves together
+# Specifying the axis ticks' position
+xticks <- axTicks(1)
+# Adding the X-axis tick labels.
+axis(1, at = xticks, labels = format(xticks, big.mark = ","), cex.axis = 1.5)
+
+# Specifying the Y-axis ticks' position.
+yticks <- axTicks(2)
+# Adding the Y-axis tick labels.
+axis(2, at = yticks, labels = format(yticks, big.mark = ","), cex.axis = 1.5)
+
+# Adding the sub-plot title.
+mtext("c)", side = 3, line = 1, adj = 0, cex = 2, font = 2)
+
+# Plotting the two OTU accumulation curves together
+
 par(family = "sans") # Specifying the font family.
 
-plot(specaccumsed, ci = 0, las = 0, col = "red", lwd = 2, las = 1,
-     xlab = "", ylab = "", xlim = c(0,1400), ylim = c(0,35000), cex.axis=1.5, cex.lab = 1.5)+
-  text(1170,35000,"sediment", cex = 1.5)+
-  lines(specaccumwat, ci = 0, col = "blue", lwd = 2, lty = "dashed", xlab = "", ylab = "")+
-  text(1355,27000,"water", cex = 1.5)+
-  mtext("Fungal OTUs", side = 2, line = 6, cex = 1.2)+
-  mtext("Cumulative number of samples", side = 1, line = 3, cex = 1.2)+
-  mtext("d)", side = 3, line = 1, adj = 0, cex = 2)
+# Plotting the sediment samples' OTU accumulation curve.
+plot(specaccumsed,
+     ci = 0, col = "red", lwd = 2, las = 1,
+     xlab = "", ylab = "",
+     xlim = c(0, 1400), ylim = c(0, 35000),
+     cex.axis = 1.5, cex.lab = 1.5,
+     xaxt = "n", yaxt = "n") # Removing the x- and y-axis labels to rewrite them later.
+
+# Adding the filtered water samples' OTU accumulation curve. 
+lines(specaccumwat,
+      ci = 0, col = "blue", lwd = 2, lty = "dashed")
+
+# Specifying the X-axis limits.
+xticks <- pretty(c(0, 1400))
+
+# Plotting the X-axis, while using commas to separate the thousands.
+axis(1, at = xticks, labels = format(xticks, big.mark = ","), cex.axis = 1.5)
+
+# Specifying the Y-axis limits.
+yticks <- pretty(c(0, 35000))
+
+# Plotting the Y-axis, while using commas to separate the thousands.
+axis(2, at = yticks, labels = format(yticks, big.mark = ","), cex.axis = 1.5, las = 1)
+
+# Adding Labels and annotations
+mtext(expression(bold("Fungal OTUs")), side = 2, line = 5, cex = 1.2)
+mtext(expression(bold("Cumulative number of samples")), side = 1, line = 3, cex = 1.2)
+
+# Adding line labels
+text(1170, 35000, "sediment", cex = 1.5)
+text(1355, 27000, "water", cex = 1.5)
+
+# Adding subplot title.
+mtext("d)", side = 3, line = 1, adj = 0, cex = 2, font = 2)
+
 
 # Resetting the plot layout.
-par(mfrow=c(1,1))
+par(mfrow = c(1,1))
+
+gc()
 ```
 
 
-```
+
 
 ### 2.4.4 Overview of the continent specific sequencing depth
 
@@ -1143,7 +1297,152 @@ knitr::kable(metadata %>%
   kable_styling(full_width = FALSE)
 ```
 
+The next part of the code generates barcharts which depict the number of OTUs detected in samples from each continent.
 
+First figure will show the number of fungal OTUs detected in both sample combined (a). The second figure will show the number of fungal OTUs separately for both sample types (b).
+```{r continentsOTUs, fig.width = 10, dpi = 300, echo = TRUE, error = FALSE, message = FALSE, warning = FALSE}
+### Generating bar charts depicting how many OTUs were collected from each continent.
+
+# Adding back the OTU ID column to the fungal OTU table.
+fungioturenamed <-  fungiotu %>% rownames_to_column("OTU")
+# Adding back the OTU ID column to the fungal taxonomy table.
+fungitaxrenamed <-  fungitax %>% rownames_to_column("OTU")
+# Adding back the sample ID column to the sample metadata table.
+metadatarenamed <- metadata %>% rownames_to_column("sample")
+# Selecting the columns necessary for plotting.
+metadatarenamed <- metadatarenamed[, c("sample", "sample_source", 
+                                     "continent", "biome")]
+
+# Converiting the OTU table into long format.
+fungiotulong <- fungioturenamed %>%
+  pivot_longer(
+    cols = -OTU,              
+    names_to = "sample",
+    values_to = "abundance"
+  )
+
+# Joining together the taxonomy, long format OTU and sample metadata tables.
+otuwithmeta <- fungiotulong %>%
+  left_join(metadatarenamed, by = "sample") %>%
+  left_join(fungitaxrenamed, by ="OTU") %>%
+  group_by(sample_source)
+
+
+# Generating a table which shows how many unique fungal OTUs were collected from each continent.
+
+# Here, the sediments and filtered water samples are combined.
+oturichnesstable <- otuwithmeta %>%
+  group_by(continent) %>%
+  dplyr::filter(abundance > 0) %>%
+  dplyr::distinct(continent, OTU) %>%
+  dplyr::count(continent, name = "fungal_otus_unique")
+
+# Generating a table which shows how many unique fungal OTUs were collected from each continent.
+
+# Here, the number of OTUs is given seperately for both sample types.
+otuwithmeta %>%
+  dplyr::filter(abundance > 0) %>%
+  dplyr::distinct(continent, OTU, sample_source) %>%
+  dplyr::count(continent, sample_source, name = "fungal_otus_unique")
+
+# Generating a table which shows how many unique fungal OTUs were collected from each continent.
+
+# Here, the sediments and filtered water samples are combined.
+oturichnesstable <- otuwithmeta %>%
+  group_by(continent) %>%
+  dplyr::filter(abundance > 0) %>%
+  dplyr::distinct(continent, OTU) %>%
+  dplyr::count(continent, name = "fungal_otus_unique")
+
+# Generating a table which shows how many unique fungal OTUs were collected from each continent.
+
+# Here, the number of OTUs is given seperately for both sample types.
+oturichnesstable2 <- otuwithmeta %>%
+  dplyr::filter(abundance > 0) %>%
+  dplyr::distinct(continent, OTU, sample_source) %>%
+  dplyr::count(continent, sample_source, name = "fungal_otus_unique")
+
+# Generating the first bar chart.
+continentrichness1 <- ggplot(oturichnesstable) +
+  # Continents are reordered based on fungal OTU numbers.
+  aes(x = reorder(continent, fungal_otus_unique),
+      y = fungal_otus_unique) +
+  geom_bar(stat ="identity", fill ="black") +
+  scale_y_continuous(labels = function(x) format(x, big.mark = ",", 
+                                                 scientific = FALSE)) +
+  # Adding labels depicting the number of OTUs.
+  geom_text(aes(x = reorder(continent, fungal_otus_unique), 
+                y = fungal_otus_unique,
+                label = format(fungal_otus_unique,
+                               big.mark =",",
+                               scientific = FALSE)), 
+            position = position_dodge(width = 0.9),
+            hjust = -0.5,
+            size = 3) +
+  theme_classic(base_size = 12) +
+  labs(x = "Continent", y = "Unique fungal OTUs",
+       title= "a)")+
+  # Adjusting aesthetic parameters.
+  theme(plot.caption = element_text(hjust = 0),
+        plot.title.position = "plot",
+        text = element_text(family = "sans", size = 15),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 10),
+        axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+        plot.margin = margin(t = 10, b = 0, l = 10, r = 15),
+        title = element_text(face = "bold")) +
+  # Turning off figure element clipping. This allows the bar chart labels to be displayed properly.
+  coord_flip(clip = "off")
+
+# Generating a figure depicting the number of fungal OTUs detected in sediment and filtered water samples from each continent.
+ggplot(oturichnesstable2) +
+  aes(x = reorder(continent, fungal_otus_unique), # Reordering the continents by the fungal OTU numbers.
+      y = fungal_otus_unique,
+      pattern = sample_source) +
+  scale_y_continuous(labels = function(x) format(x, big.mark = ",", 
+                                                 scientific = FALSE)) +
+  # Adjusting pattern fills for the side-by-side bars.
+  geom_col_pattern(fill = "white", 
+                   position = position_dodge2(width = 0.5, padding = 0.2), 
+                   pattern_density = 0.3, 
+                   pattern_fill = "black", pattern_spacing = 0.01, 
+                   colour = "black",
+                   show.legend = c(fill = FALSE, pattern = TRUE)) +
+  # Manually specifying the pattern fill types of the sample types.
+  scale_pattern_manual(
+    values = c(
+      "water" = "none",
+      "sediment" = "circle"),
+    breaks = c("water", "sediment"),
+    name = "Sample Type") +
+  # Adding the number of OTUs detected next to each bar.
+  geom_text(aes(x = reorder(continent, fungal_otus_unique),
+                y = fungal_otus_unique,
+                label = format(fungal_otus_unique,
+                                       big.mark =",",
+                                       scientific = FALSE),
+                group = sample_source),
+            position = position_dodge(width = 0.9),
+            hjust = -0.5,
+            size = 3) +
+  theme_classic(base_size = 12) +
+  labs(x = "Continent", y = "Unique fungal OTUs", pattern = "Sample Type",
+       title= "b)")+
+  # Adjusting aesthetical parameters.
+  theme(plot.margin = margin(t = 5, r = 10, b = 10, l = 10),
+        plot.caption = element_text(hjust = 0),
+        plot.title.position = "plot",
+        text = element_text(family = "sans", size = 15),
+        axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 10),
+        title = element_text(face = "bold"))+
+  # Turning off figure element clipping. This allows the bar chart labels to be displayed properly.
+  coord_flip(clip = "off")
+
+
+
+```
 ### 2.4.5 Overview of the biome specific sequencing depth
 
 Returns a table which includes columns for the following data:
@@ -1270,4 +1569,838 @@ knitr::kable(metadata %>%
   )) %>%
   kable_classic() %>%
   kable_styling(full_width = FALSE)
+```
+
+The next part of the code will generate bar charts depicting the number of fungal OTUs detected in each biome.
+First, the code will generate a figure depicting the number of unique fungal OTUs in both sample types combined (a), then it will create a figure showing the number of unique fungal OTUs for each sample type separately (b). 
+```{r biomesOTUs, echo = TRUE, fig.width = 10, dpi = 300, error = FALSE, message = FALSE, warning = FALSE}
+# Generating a table which shows how many unique fungal OTUs were collected from each biome.
+# Here, the sediments and filtered water samples are combined.
+oturichnesstable3 <- otuwithmeta %>%
+  group_by(biome) %>%
+  dplyr::filter(abundance > 0) %>%
+  dplyr::distinct(biome, OTU) %>%
+  dplyr::count(biome, name = "fungal_otus_unique")
+
+# Generating a table which shows how many unique fungal OTUs were collected from each continent.
+# Here, the number of OTUs is given seperately for both sample types.
+oturichnesstable4 <- otuwithmeta %>%
+  dplyr::filter(abundance > 0) %>%
+  dplyr::distinct(biome, OTU, sample_source) %>%
+  dplyr::count(biome, sample_source, name = "fungal_otus_unique")
+
+
+ggplot(oturichnesstable3) +
+  aes(x = reorder(biome, fungal_otus_unique), # Reordering the biomes based on fungal OTU richness.
+      y = fungal_otus_unique)+
+  geom_bar(stat ="identity", fill ="black") +
+  # Editing the X-axis labels for cleaner figures.
+  scale_y_continuous(labels = function(x) format(x, big.mark = ",", 
+                                                 scientific = FALSE)) +
+  scale_x_discrete(labels = function(x) gsub("aquatic: ", "", x)) +
+  geom_text(aes(x = reorder(biome, fungal_otus_unique),
+                y = fungal_otus_unique,
+                label = format(fungal_otus_unique,
+                               big.mark =",",
+                               scientific = FALSE)),
+            position = position_dodge(width = 0.9),
+            hjust = -0.5,
+            size = 3) +
+  theme_classic(base_size = 12) +
+  labs(x = "Biome", y = "Unique fungal OTUs",
+       title= "a)")+
+  # Adjusting the aesthetic parameters.
+  theme(plot.caption = element_text(hjust = 0),
+        plot.title.position = "plot",
+        text = element_text(family = "sans", size = 15),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 10),
+        axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+        plot.margin = margin(t = 10, r = 5, b = 0, l = 10),
+        title = element_text(face = "bold")) +
+  coord_flip(clip = "off")
+
+
+ggplot(oturichnesstable4) +
+  aes(x = reorder(biome, fungal_otus_unique),
+      y = fungal_otus_unique,
+      pattern = sample_source) +
+  scale_x_discrete(labels = function(x) gsub("aquatic: ", "", x)) +
+  scale_y_continuous(labels = function(x) format(x, big.mark = ",", 
+                                                 scientific = FALSE)) +
+  geom_col_pattern(fill = "white",position = position_dodge2(width = 0.5, padding = 0.2), 
+                   pattern_density = 0.3, 
+                   pattern_fill = "black", pattern_spacing = 0.01, 
+                   colour = "black",
+                   show.legend = c(fill = FALSE, pattern = TRUE)) +
+  # Manually specifying the pattern fill types of the sample types.
+  scale_pattern_manual(
+    values = c(
+      "water" = "none",
+      "sediment" = "circle"),
+    breaks = c("water", "sediment"),
+    name = "Sample Type") +
+  
+  geom_text(aes(x = reorder(biome, fungal_otus_unique),
+                y = fungal_otus_unique,
+                label = format(fungal_otus_unique,
+                               big.mark =",",
+                               scientific = FALSE),
+                group = sample_source),
+            position = position_dodge(width = 0.9),
+            hjust = -0.5,
+            size = 3) +
+  theme_classic(base_size = 12) +
+  labs(x = "Biome", y = "Unique fungal OTUs", pattern = "Sample Type",
+       title= "b)")+
+  theme(plot.margin = margin(t = 5, r = 5, b = 10, l = 10),
+        plot.caption = element_text(hjust = 0),
+        plot.title.position = "plot",
+        text = element_text(family = "sans", size = 15),
+        axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 10),
+        title = element_text(face = "bold")) +
+  # Turning off figure element clipping. This allows the bar chart labels to be displayed properly.
+  coord_flip(clip = "off")
+```
+
+
+### 2.5 Overview of the dataset's taxonomic coverage.
+
+#### 2.5.0 Preparation step
+
+Firstly, the code will remove objects which will not be used further from the environment.
+```{r garbagecollection, echo = TRUE, error = FALSE, message = FALSE, warning = FALSE}
+# Removing objects that will not be used in the next pipeline steps from the environment
+rm(list = c("eukphyseq",
+            "euktax",
+            "eukotu",
+            "eukotused",
+            "euktaxsed",
+            "eukotuwat",
+            "euktaxwat",
+            "combinedtax",
+            "oturichnesstable",
+            "oturichnesstable2",
+            "oturichnesstable3",
+            "oturichnesstable4",
+            "fungiotulong",
+            "fungitaxrenamed",
+            "fungioturenamed",
+            "metadatarenamed",
+            "otuwithmeta"
+            ))
+gc() 
+```
+
+Now the pipeline will prepare files to create tables showcasing the taxonomic coverage.
+
+```{r filepreptax, echo = TRUE, error = FALSE, message = FALSE, warning = FALSE}
+# Using MicroViz to rename taxonomic classifications given to unknown taxa.
+# Eg. if, for example, an Ascomycota class was named as ".", then the class will be renamed to "Ascomycota Class". 
+# This is to ensure that unknown taxa are not lumped together between different fungal groups.
+fungiphyseq <- fungiphyseq %>% 
+  tax_fix(
+    min_length = 2,
+    unknowns = c(""),
+    sep = " ", anon_unique = TRUE,
+    suffix_rank = "current"
+  )
+
+# Extracting the taxonomy table with fixed names.
+fungitaxnamesfixed <- data.frame(tax_table(fungiphyseq))
+
+# Renaming the unidentified taxa for better visualization. 
+fungitaxnamesfixed$Class <- gsub("_cl_incertae_sedis", " Class", 
+                                 fungitaxnamesfixed$Class)
+fungitaxnamesfixed$Order <- gsub("_ord_incertae_sedis", " Order", 
+                                 fungitaxnamesfixed$Order)
+
+# Subsetting the updated fungal taxonomy table to only include taxonomy data from sediment samples.
+fungitaxnamesfixedsed <- fungitaxnamesfixed[c(row.names(fungiotused)),]
+
+# Subsetting the updated fungal taxonomy table to only include taxonomy data from  water samples.
+fungitaxnamesfixedwat <- fungitaxnamesfixed[c(row.names(fungiotuwat)),]
+
+# Adding the number of sequences detected to each OTU.
+fungitaxlongnamesfixed <-
+  {dataframe <- fungitaxnamesfixed
+  dataframe$seq_count <- rowSums(fungiotu)
+  dataframe} 
+
+# Adding the number of sequences to each OTU detected in sediments.
+fungitaxlongnamesfixedsed <-
+  {dataframe <- fungitaxnamesfixedsed
+  dataframe$seq_count <- rowSums(fungiotused)
+  dataframe} 
+
+# Adding the number of sequences to each OTU detected in filtered water samples.
+fungitaxlongnamesfixedwat <-
+  {dataframe <- fungitaxnamesfixedwat
+  dataframe$seq_count <- rowSums(fungiotuwat)
+  dataframe} 
+```
+
+#### 2.5.1 Phylum level coverage
+
+This section will go over the phylum level taxonomic coverage of the dataset.
+
+The first part of this section will generate tables showing the 10 most OTU-abundant phyla in (1) all samples combined; (2) sediment samples; and (3) water samples.
+
+```{r phylumTables, echo = TRUE, error = FALSE, message = FALSE, warning = FALSE} 
+# First, the code generates an overview of the 10 most OTU-abundant Phyla in all samples combined.
+
+knitr::kable(fungitaxlongnamesfixed %>%
+                group_by(Phylum) %>% # Data is grouped by phyla.
+                dplyr::summarise(
+                  `OTU count` = n(), # Counts the number of OTUs.
+                  Sequences = sum(seq_count)) %>% # Summarizes the sequence counts.
+                
+                # Calculates the OTU and sequence percentage for each phylum.
+                mutate(`OTU percentage` = round(`OTU count` / sum(`OTU count`) * 100, 1),
+                       `Sequence percentage` = round(Sequences / sum(Sequences) * 100, 1)) %>%
+                slice_max(`OTU count`, n = 10), # displays the 10 most OTU abundant.
+              caption = "Most OTU abundant phyla across all samples combined") %>%
+  kable_classic() %>%
+  kable_styling(full_width = FALSE)
+
+# Then, it creates a table of the most OTU-abundant phyla in sediments.
+
+knitr::kable(fungitaxlongnamesfixedsed %>%
+                group_by(Phylum) %>%
+                dplyr::summarise(
+                  `OTU count` = n(), 
+                  Sequences = sum(seq_count)) %>%
+                mutate(`OTU percentage` = round(`OTU count` / sum(`OTU count`) * 100, 1),
+                       `Sequence percentage` = round(Sequences / sum(Sequences) * 100, 1)) %>%
+                slice_max(`OTU count`, n = 10),
+              caption = "Most OTU abundant phyla across sediment samples") %>%
+  kable_classic() %>%
+  kable_styling(full_width = FALSE)
+
+
+# Lastly, it creates a table of the most OTU-abundant phyla in filtered water samples.
+knitr::kable(fungitaxlongnamesfixedwat%>%
+                group_by(Phylum) %>%
+                dplyr::summarise(
+                  `OTU count` = n(), 
+                  Sequences = sum(seq_count)) %>%
+                mutate(`OTU percentage` = round(`OTU count` / sum(`OTU count`) * 100, 1),
+                       `Sequence percentage` = round(Sequences / sum(Sequences) * 100, 1)) %>%
+                slice_max(`OTU count`, n = 10),
+              caption = "Most OTU abundant phyla across filtered water samples") %>%
+  kable_classic() %>%
+  kable_styling(full_width = FALSE)
+```
+
+
+The second and last part of this section will create a stacked bar-chart to depict the relative abundance of fungal phyla in all samples combined, in sediment samples, and in filtered water samples
+```{r phylumChart, echo = TRUE, fig.width = 8, dpi = 300, error = FALSE, message = FALSE, warning = FALSE}
+## Preparation steps
+
+# Adding back the OTU column to the fungal OTU table from the row names.
+fungioturenamed <-  fungiotu %>% rownames_to_column("OTU")
+# Adding back the OTU column to the fungal taxonomy table from the row names.
+fungitaxrenamed <-  fungitaxlongnamesfixed %>% rownames_to_column("OTU")
+# Adding back the sample ID column to the metadata table
+metadatarenamed <- metadata %>% rownames_to_column("sample")
+# Selecting only columns necessary for plotting.
+metadatarenamed<- metadatarenamed[,c("sample", "plot_name", "sample_source")]
+
+# Generating a long-format table where each row represents an OTU found in one sample.
+fungiotulong <- fungioturenamed %>%
+  pivot_longer(
+    cols = -OTU,              
+    names_to = "sample",
+    values_to = "abundance"
+  )
+
+# Adding the sample metadata table to the long format table.
+otuwithmeta <- fungiotulong %>%
+  left_join(metadatarenamed, by = "sample") %>%
+  left_join(fungitaxrenamed, by = "OTU") %>%
+  group_by(sample_source)
+
+
+# Creating a function to calculate relative abundance.
+# Arguments:
+# data - OTU metadata table combined with taxonomy and sample metadata.
+# label - label indicating sample type (i.e "combined", "sediment", "water)
+# taxlevel - indicating the taxonomic level at which the data is analyzed.
+
+calcrelabun <- function(data, label, taxlevel) {
+  data %>%
+    # Dataframe is grouped by a specific taxonomic level.
+    dplyr::group_by(.data[[taxlevel]]) %>%
+    # The number of unique OTUs is calculated for each taxa of that specific taxonomic level.
+    dplyr::summarise(OTU_count = dplyr::n_distinct(OTU)) %>% 
+    # The relative abundance of each taxa is calculated on that specific taxonomic level.
+    dplyr::mutate(RelAbundance = (OTU_count / sum(OTU_count)) * 100,
+                  # Creates a column "Group" that indicates the sample type.
+                  Group = label) 
+}
+
+
+# Calculating a table of all of the phyla's relative abundance with all samples combined.
+otuwithmetaphylumrel <- calcrelabun(otuwithmeta, "combined", "Phylum")
+
+# Doing the same with sediment samples.
+sediments <- otuwithmeta  %>%
+  # Filtering out the sediment sample rows.
+  dplyr::filter(sample_source == "sediment") %>% 
+  # Keeping only the OTUs which have been detected in sediments.
+  dplyr::filter(abundance > 0) %>%
+  calcrelabun(data = ., "sediment", "Phylum")
+
+# Repeating the previous steps with filtered water samples.
+water <- otuwithmeta %>%
+  dplyr::filter(sample_source == "water") %>%
+  dplyr::filter(abundance > 0) %>%
+  calcrelabun(data = ., "water", "Phylum")
+
+# Combining all of the three dataframes together.
+otuphylumrelcombined <- bind_rows(otuwithmetaphylumrel, sediments, water)
+
+
+# Removing the intermediary objects to clear memory.
+
+rm(list = c("otuwithmetaphylumrel",
+            "sediments",
+            "water"))
+
+# Removing unused objects.
+gc()
+
+# Creating a dataframe for the purpose of plotting stacked bar plots
+
+plot_data <- otuphylumrelcombined %>%
+  # Grouping by sample type.
+  dplyr::group_by(Group) %>%
+  # Gives each phyla a rank based on their OTU abundance.
+  dplyr::mutate(rank = rank(-OTU_count)) %>%
+  # Filters out the 5 most abundant phyla, others are lumped into the group "other".
+  dplyr::mutate(Phylum = ifelse(rank <= 5, Phylum, "Other")) %>%
+  # Groups the data by sample type and phyla.
+  dplyr::group_by(Group, Phylum) %>%
+  # Generates OTU count numbers.
+  dplyr::summarise(OTU_count = sum(OTU_count), .groups = "drop") %>%
+  # Groups the data by sample type again.
+  dplyr::group_by(Group) %>%
+  # Calculates relative abundance.
+  dplyr::mutate(
+    RelAbundance = OTU_count / sum(OTU_count) * 100
+  ) %>%
+  dplyr::ungroup()
+
+
+# For better visualization, unidentified taxa are renamed.
+plot_data$Phylum <- replace(plot_data$Phylum, 
+                          plot_data$Phylum ==".",
+                          "unidentified") 
+
+# Generating the stacked barplot.
+# Phyla are reordered based on OTU count.
+ggplot(plot_data, aes(fill = reorder(Phylum, OTU_count), 
+                                       y = OTU_count, x = Group)) + 
+  geom_bar(position = "fill", stat = "identity", colour = "black")+
+  scale_fill_brewer(palette = "Set2") + # Specifying colour palette.
+  # Adding labels to the stacked barplot sections to show each taxa's relative abundance.
+  geom_text(aes(label = round(RelAbundance, 1)),
+            position = position_fill(vjust = 0.5),
+            size = 4,
+            vjust = -0.75)+
+  # Changing the Y-scale to show percentages.
+  scale_y_continuous(labels = scales::percent)+
+  labs(x = "Sample type", y ="Relative abundance of OTUs", fill ="Phylum")+
+  theme_classic()+
+  theme(text = element_text(family = "sans", size=15),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 10),
+        title = element_text(face = "bold"))
+
+# Removing intermediary objects from the environments. 
+rm(list = c("otuphylumrelcombined",
+            "plot_data"))
+# Removing unused objects.
+gc()
+
+```
+
+#### 2.5.2 Class level coverage
+
+This section will go over the class level taxonomic coverage of the dataset.
+
+The first part of this section will generate tables showing the 10 most OTU-abundant classes in (1) all samples combined; (2) sediment samples; and (3) water samples.
+
+```{r classTables, echo = TRUE, error = FALSE, message = FALSE, warning = FALSE} 
+# First, it generates a table showing the most OTU-abundant classes across all samples combined.
+knitr::kable(fungitaxlongnamesfixed%>%
+                group_by(Class) %>%
+                dplyr::summarise(
+                  `OTU count` = n(), 
+                  Sequences = sum(seq_count)) %>%
+                mutate(`OTU percentage` = round(`OTU count` / sum(`OTU count`) * 100, 1),
+                       `Sequence percentage` = round(Sequences / sum(Sequences) * 100, 1)) %>%
+                slice_max(`OTU count`, n = 10),
+              caption = "Most OTU abundant classes across all samples combined") %>%
+  kable_classic() %>%
+  kable_styling(full_width = FALSE) 
+
+# Then, it generates a table showing the most OTU-abundant classes in sediments.
+knitr::kable(fungitaxlongnamesfixedsed %>%
+                group_by(Class) %>%
+                dplyr::summarise(
+                  `OTU count` = n(), 
+                  Sequences = sum(seq_count)) %>%
+                mutate(`OTU percentage` = round(`OTU count` / sum(`OTU count`) * 100, 1),
+                       `Sequence percentage` = round(Sequences / sum(Sequences) * 100, 1)) %>%
+                slice_max(`OTU count`, n = 10),
+              caption = "Most OTU abundant classes across sediment samples") %>%
+  kable_classic() %>%
+  kable_styling(full_width = FALSE)
+
+# Lastly, it generates a table showing the most OTU-abundant classes in water.
+knitr::kable(fungitaxlongnamesfixedwat %>%
+                group_by(Class) %>%
+                dplyr::summarise(
+                  `OTU count` = n(), 
+                  Sequences = sum(seq_count)) %>%
+                mutate(`OTU percentage` = round(`OTU count` / sum(`OTU count`) * 100, 1),
+                       `Sequence percentage` = round(Sequences / sum(Sequences) * 100, 1)) %>%
+                slice_max(`OTU count`, n = 10),
+              caption = "Most OTU abundant classes across filtered water samples") %>%
+  kable_classic() %>%
+  kable_styling(full_width = FALSE)
+
+
+```
+
+The second and last part of this section will create a stacked bar-chart to depict the relative abundance of fungal classes in all samples combined, in sediment samples, and in filtered water samples
+
+```{r classChart, echo = TRUE, fig.width = 8, dpi = 300, error = FALSE, message = FALSE, warning = FALSE} 
+
+# Creating a table with all of the classes' relative abundances in all samples combined.
+otuwithmetaclassrel <- calcrelabun(otuwithmeta, "combined", "Class")
+
+# Repeating that for sediment samples.
+sediments <- otuwithmeta  %>%
+  dplyr::filter(sample_source == "sediment") %>%
+  dplyr::filter(abundance > 0) %>%
+  calcrelabun(data = ., "sediment", "Class")
+
+# Repeating that for filtered water samples.
+water <- otuwithmeta %>%
+  dplyr::filter(sample_source == "water") %>%
+  dplyr::filter(abundance > 0) %>%
+  calcrelabun(data = ., "water", "Class")
+
+# Combining the tables together.
+otuclassrelcombined<- bind_rows(otuwithmetaclassrel, sediments, water)
+otuclassrelcombined$Class <- gsub("_cl_incertae_sedis", " Class", 
+                                  otuclassrelcombined$Class)
+# Removing the intermediary objects to clear memory.
+
+rm(list = c("otuwithmetaclassrel",
+            "sediments",
+            "water"))
+
+# Removing unused objects.
+gc()
+
+
+# Creating a dataframe for the purpose of plotting stacked bar plots
+
+plot_data <- otuclassrelcombined %>%
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(rank = rank(-OTU_count)) %>%
+  # Selecting the 7 most abundant classes.
+  dplyr::mutate(Class = ifelse(rank <= 7, Class, "Other")) %>%
+  dplyr::group_by(Group, Class) %>%
+  dplyr::summarise(OTU_count = sum(OTU_count), .groups = "drop") %>%
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(
+    RelAbundance = OTU_count / sum(OTU_count) * 100
+  ) %>%
+  dplyr::ungroup()
+
+
+plot_data$Class <- replace(plot_data$Class, 
+                         plot_data$Class==".",
+                         "unidentified") 
+
+
+# Creating a stacked bar chart of the most OTU abundant classes. 
+ggplot(plot_data, 
+                        aes(fill = reorder(Class, OTU_count), 
+                            y = OTU_count, x = Group)) + 
+  geom_bar(position = "fill", stat = "identity", colour = "black")+
+  scale_fill_brewer(palette = "Set2") + 
+  geom_text(aes(label = round(RelAbundance, 1)),
+            position = position_fill(vjust = 0.5),
+            size = 4)+
+  scale_y_continuous(labels = scales::percent)+
+  labs(x="Sample type", y ="Relative abundance of OTUs", fill ="Class")+
+  theme_classic()+
+  theme(text = element_text(family = "sans", size=15),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 10),
+        title = element_text(face = "bold"))
+
+# Removing the intermediary objects to clear memory.
+rm(list = c("otuclassrelcombined",
+            "plot_data"))
+
+# Removing unused objects.
+gc()
+```
+
+#### 2.5.3 Order level coverage
+
+The first part of this section will generate tables showing the 10 most OTU-abundant orders in (1) all samples combined; (2) sediment samples; and (3) water samples.
+
+
+```{r orderTables, echo = TRUE, error = FALSE, message = FALSE, warning = FALSE} 
+# First, the code generates an overview of the 10 most OTU-abundant orders in all samples combined.
+knitr::kable(fungitaxlongnamesfixed%>%
+                group_by(Order) %>%
+                dplyr::summarise(
+                  `OTU count` = n(), 
+                  Sequences = sum(seq_count)) %>%
+                mutate(`OTU percentage` = round(`OTU count` / sum(`OTU count`) * 100, 1),
+                       `Sequence percentage` = round(Sequences / sum(Sequences) * 100, 1)) %>%
+                slice_max(`OTU count`, n = 10),
+              caption = "Most OTU abundant orders across all samples combined") %>%
+  kable_classic() %>%
+  kable_styling(full_width = FALSE)
+
+# Then, the code generates an overview of the most OTU-abundant orders in sediment samples.
+knitr::kable(fungitaxlongnamesfixedsed %>%
+                group_by(Order) %>%
+                dplyr::summarise(
+                  `OTU count` = n(), 
+                  Sequences = sum(seq_count)) %>%
+                mutate(`OTU percentage` = round(`OTU count` / sum(`OTU count`) * 100, 1),
+                       `Sequence percentage` = round(Sequences / sum(Sequences) * 100, 1)) %>%
+                slice_max(`OTU count`, n = 10),
+              caption = "Most OTU abundant orders across sediment samples") %>%
+  kable_classic() %>%
+  kable_styling(full_width = FALSE)
+
+# Lastly, the code generates an overview of the most OTU-abundant orders in filtered samples.
+knitr::kable(fungitaxlongnamesfixedwat %>%
+                group_by(Order) %>%
+                dplyr::summarise(
+                  `OTU count` = n(), 
+                  Sequences = sum(seq_count)) %>%
+                mutate(`OTU percentage` = round(`OTU count` / sum(`OTU count`) * 100, 1),
+                       `Sequence percentage` = round(Sequences / sum(Sequences) * 100, 1)) %>%
+                slice_max(`OTU count`, n = 10),
+              caption = "Most OTU abundant orders across filtered water samples") %>%
+  kable_classic() %>%
+  kable_styling(full_width = FALSE)
+
+# Deletes the previously generated objects to free up memory.
+
+rm(list = c("fungitaxlongnamesfixedsed",
+            "fungitaxlongnamesfixedwat"))
+```
+
+The second and last part of this section will create heatmaps to depict the relative abundance of fungal orders in all samples combined, in sediment samples, and in filtered water samples.
+
+a) Heatmap depicting the relative abundance of the most OTU-abundant orders overall given in percentages of all fungal OTUs; 
+
+b) heatmap depicting the relative abundance of Ascomycota orders given in percentages of Ascomycota OTUs; 
+
+c) heatmap depicting the relative abundance of Basidiomycota orders given in percentages of Basidiomycota OTUs; 
+
+d) heatmap depicting the relative abundance of Chytridiomycota orders given in percentages of Chytridiomycota OTUs. 
+
+Names on the Y-axis ending with “Order” are unidentified orders of that specific taxon. 
+
+```{r orderChart, echo = TRUE, fig.width = 8, dpi = 300, error = FALSE, message = FALSE, warning = FALSE} 
+
+# Creating a new function for calculating relative abundance.
+# This function calculates relative abundance of orders.
+# It also keeps the phylum names intact so that each class' relative abundance can be calculated in relation to all of it's phyla's OTUs.
+calcrelabun2 <- function(data, label, taxlevel) {
+  data %>%
+    dplyr::group_by(Phylum, .data[[taxlevel]]) %>%   
+    dplyr::summarise(
+      OTU_count = dplyr::n_distinct(OTU),
+      .groups = "drop"
+    ) %>%
+    dplyr::group_by(Phylum) %>%   
+    dplyr::mutate(
+      RelAbundance = (OTU_count / sum(OTU_count)) * 100,
+      Group = label
+    ) %>%
+    dplyr::ungroup()
+}
+
+# Calculating the orders' relative abundance table.
+otuwithmetaorderrel <- calcrelabun(otuwithmeta, "combined", "Order")
+
+# Repeating that for sediments.
+sediments <- otuwithmeta  %>%
+  dplyr::filter(sample_source == "sediment") %>%
+  dplyr::filter(abundance > 0) %>%
+  calcrelabun(data = ., "sediment", "Order")
+
+# Repeating that for water.
+water <- otuwithmeta %>%
+  dplyr::filter(sample_source == "water") %>%
+  dplyr::filter(abundance > 0) %>%
+  calcrelabun(data = ., "water", "Order")
+
+# Combining the generated tables together.
+otuorderrelcombined<- bind_rows(otuwithmetaorderrel, sediments, water)
+
+# Removing the intermediary objects to clear memory.
+rm(list = c("otuwithmetaorderrel",
+            "sediments",
+            "water"))
+
+# Removing unused objects.
+gc()
+
+
+# Generating a table for a heat map depicting the relative abundance of each class when looking at all of the taxa together.
+# i.e without grouping by phylum.
+
+plot_data <- otuorderrelcombined %>%
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(rank = rank(-OTU_count)) %>%
+  # Selecting the 10 most abundant taxa.
+  dplyr::mutate(Order = ifelse(rank <= 10, Order, "Other")) %>%
+  dplyr::group_by(Group, Order) %>%
+  dplyr::summarise(OTU_count = sum(OTU_count), .groups = "drop") %>%
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(
+    RelAbundance = OTU_count / sum(OTU_count) * 100
+  ) %>%
+  dplyr::ungroup()
+
+
+plot_data$Order<-replace(plot_data$Order, 
+                         plot_data$Order==".",
+                         "unidentified") 
+plot_data$Order<-replace(plot_data$Order, 
+                         plot_data$Order=="Fungi Order",
+                         "unidentified") 
+
+# Creating the first heat map.
+# This depicts each order's relative abundance when considering all fungal OTUs.
+
+# Data is reordered by relative abundance.
+ggplot(plot_data, aes(x = Group,
+                                  y = reorder(Order, RelAbundance,
+                                              FUN = function(z) max(z, na.rm = TRUE)),
+                                  fill = RelAbundance)) +
+  geom_tile() +
+  paletteer::scale_fill_paletteer_c("viridis::plasma", # Specifying the colour palette for the plot.
+                                    limits = c(0,50))+
+  theme_classic() +
+  # Adjusting aesthetical parameters pertaining to the legend and font size.
+  theme(legend.position = "right", legend.direction = "vertical",
+        legend.title = element_text(size = 15), legend.key.size = unit(1,"cm"),
+        legend.text = element_text(size = 10),
+        text = element_text(family = "sans", size = 13.5),
+        axis.text.x = element_text(hjust = 0.5, vjust = 0.70),
+        title = element_text(face = "bold")) +
+  # Adding percentage labels to each tile.
+  geom_text(
+    aes( 
+      label = round(RelAbundance, 1),
+      color = RelAbundance > 20
+    ), size = 4) +
+  scale_color_manual(values = c("FALSE" = "white", "TRUE" = "black"), guide = "none")+
+  labs(
+    x = "Sample type",
+    y = "Order",
+    fill = "Relative abundance (%) of OTUs",
+    title = "a) All phyla"
+  ) 
+
+
+
+
+# Now the code generates phylum-specific heat maps.
+
+# Calculating abundances with all samples combined
+otuwithmetaorderrel2 <- calcrelabun2(otuwithmeta, "combined", "Order")
+
+# Repeating that with sediment samples.
+sediments2 <- otuwithmeta  %>%
+  dplyr::filter(sample_source == "sediment") %>%
+  dplyr::filter(abundance > 0) %>%
+  calcrelabun2(data = ., "sediment", "Order")
+
+# Repeating that for filtered water samples.
+water2 <- otuwithmeta %>%
+  dplyr::filter(sample_source == "water") %>%
+  dplyr::filter(abundance > 0) %>%
+  calcrelabun2(data = ., "water", "Order")
+
+# Combining the tables together.
+otuorderrelcombined2 <- bind_rows(otuwithmetaorderrel2, sediments2, water2)
+
+# Updating the taxonomic labels for unidentified OTUs.
+otuorderrelcombined2$Order <-replace(otuorderrelcombined2$Order, 
+                                     otuorderrelcombined2$Order == ".",
+                                     "unidentified") 
+
+# Removing the intermediary objects to clear memory.
+rm(list = c("otuwithmetaorderrel2",
+            "sediments2",
+            "water2"))
+
+# Removing unused objects.
+gc()
+
+# Generating the dataframe used for heat map plotting.
+plot_data2 <- otuorderrelcombined2 %>%
+  dplyr::filter(Phylum == "Ascomycota") %>% # Selects Ascomycota phylum.
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(rank = rank(-OTU_count)) %>%
+  dplyr::mutate(Order = ifelse(rank <= 10, Order, "Other")) %>% # Chooses the 10 most abundant Ascomycota taxa.
+  dplyr::group_by(Group, Phylum, Order) %>%
+  dplyr::summarise(OTU_count = sum(OTU_count), .groups = "drop") %>%
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(
+    # Calculates the relative abundance of the orders in relation to all Ascomycota OTUs.
+    RelAbundance = OTU_count / sum(OTU_count) * 100
+  ) %>%
+  dplyr::ungroup()
+
+
+# Generates a heatmap depicting the relative abundance of Ascomycota orders' OTUs in relation to Ascomycota OTUs.
+ggplot(plot_data2, aes(x = Group,
+                                    y = reorder(Order, RelAbundance,
+                                                FUN = function(z) max(z, na.rm = TRUE)),
+                                    fill = RelAbundance)) +
+  geom_tile(color = "white") +
+  paletteer::scale_fill_paletteer_c("viridis::plasma",
+                                    limits = c(0,50))+
+  theme_classic() +
+  # Adjusting aesthetical parameters pertaining to the legend and font size.
+  theme(legend.position = "right", legend.direction = "vertical",
+        legend.title = element_text(size = 15), legend.key.size = unit(1,"cm"),
+        legend.text = element_text(size = 10),
+        text = element_text(family = "sans", size = 13.5),
+        axis.text.x = element_text(hjust = 0.5, vjust = 0.70),
+        title = element_text(face = "bold"))+
+  geom_text(
+    aes(
+      label = round(RelAbundance, 1),
+      color = RelAbundance > 20
+    ), size = 4) +
+  scale_color_manual(values = c("FALSE" = "white", "TRUE" = "black"), guide = "none")+
+  labs(
+    x = "Sample type",
+    y = "Order",
+    fill = "Relative abundance (%) of OTUs",
+    title = "b) Ascomycota"
+  ) 
+
+# Generating the dataframe used for heat map plotting.
+plot_data3 <- otuorderrelcombined2 %>%
+  dplyr::filter(Phylum == "Basidiomycota") %>% # Selects orders form the Basidiomycota pylum.
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(rank = rank(-OTU_count)) %>%
+  dplyr::mutate(Order = ifelse(rank <= 10, Order, "Other")) %>% # Selects the 10 most abundant orders.
+  dplyr::group_by(Group, Phylum, Order) %>%
+  dplyr::summarise(OTU_count = sum(OTU_count), .groups = "drop") %>%
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(
+    RelAbundance = OTU_count / sum(OTU_count) * 100
+  ) %>%
+  dplyr::ungroup()
+
+# Generates the heatmap depicting the relative abundances of Basidiomycota orders' OTUs in relation to Basidiomycota OTUs.
+ggplot(plot_data3, aes(x = Group,
+                                    y = reorder(Order, RelAbundance,
+                                                FUN = function(z) max(z, na.rm = TRUE)),
+                                    fill = RelAbundance)) +
+  geom_tile(color = "white") +
+  paletteer::scale_fill_paletteer_c("viridis::plasma",
+                                    limits = c(0,50))+
+  scale_y_discrete(labels = function(y) {
+    y <- gsub(" unspecified", "\nunspecified", y)
+  })+
+  theme_classic() +
+  # Adjusting aesthetical parameters pertaining to the legend and font size.
+  theme(legend.position = "right", legend.direction = "vertical",
+        legend.title = element_text(size = 15), legend.key.size = unit(1,"cm"),
+        legend.text = element_text(size = 10),
+        text = element_text(family = "sans", size = 13.5),
+        axis.text.x = element_text( hjust = 0.5, vjust = 0.70),
+        title = element_text (face = "bold"))+
+  geom_text(
+    aes(
+      label = round(RelAbundance, 1),
+      color = RelAbundance > 20
+    ),size = 4) +
+  scale_color_manual(values = c("FALSE" = "white", "TRUE" = "black"), guide = "none")+
+  labs(
+    x = "Sample type",
+    y = "Order",
+    fill = "Relative abundance (%) of OTUs",
+    title = "c) Basidiomycota"
+  ) 
+
+
+# Generating the dataframe used for heat map plotting.
+plot_data4 <- otuorderrelcombined2 %>%
+  dplyr::filter(Phylum =="Chytridiomycota") %>% # Selecting orders belonging to the Chytridiomycota phylum.
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(rank = rank(-OTU_count)) %>%
+  dplyr::mutate(Order = ifelse(rank <= 8, Order, "Other")) %>% # Selecting the 8 most abundant orders.
+  dplyr::group_by(Group, Phylum, Order) %>%
+  dplyr::summarise(OTU_count = sum(OTU_count), .groups = "drop") %>%
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(
+    RelAbundance = OTU_count / sum(OTU_count) * 100
+  ) %>%
+  dplyr::ungroup()
+
+# Generates the heatmap depicting the relative abundances of Chytridiomycota orders' OTUs in relation to Chytridiomycota OTUs.
+ggplot(plot_data4, aes(x = Group,
+                                    y = reorder(Order, RelAbundance,
+                                                FUN = function(z) max(z, na.rm = TRUE)),
+                                    fill = RelAbundance)) +
+  geom_tile(color = "white") +
+  paletteer::scale_fill_paletteer_c("viridis::plasma",
+                                    limits = c(0,50))+
+  theme_classic() +
+  # Adjusting aesthetical parameters pertaining to the legend and font size.
+  theme(legend.position = "right", legend.direction = "vertical",
+        legend.title = element_text(size = 15), legend.key.size = unit(1,"cm"),
+        legend.text = element_text(size = 10),
+        text = element_text(family = "sans", size = 13.5),
+        axis.text.x = element_text(hjust = 0.5, vjust = 0.70),
+        title = element_text(face = "bold")) +
+  geom_text(
+    aes(
+      label = round(RelAbundance, 1),
+      color = RelAbundance > 20
+    ),size = 4) +
+  scale_color_manual(values = c("FALSE" = "white", "TRUE" = "black"), guide = "none")+
+  labs(
+    x = "Sample type",
+    y = "Order",
+    fill = "Relative abundance (%) of OTUs",
+    title = "d) Chytridiomycota"
+  ) 
+
+
+# Removing the intermediary objects to clear memory.
+rm(list = c("otuorderrelcombined2",
+            "plot_data",
+            "plot_data2",
+            "plot_data3",
+            "plot_data4"))
+
+# Removing unused objects.
+gc()
 ```
