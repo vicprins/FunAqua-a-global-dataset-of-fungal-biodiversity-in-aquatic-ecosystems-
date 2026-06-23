@@ -83,6 +83,8 @@ The pipeline is divided into the following sections:
    	* Overview of continent-specific sequencing depth
 		
    	* Overview of biome-specific sequencing depth
+   
+   2.5 Overview of the dataset's taxonomic coverage
 
 </details> 
 
@@ -118,13 +120,19 @@ The following packages are required for the .R script:
 
 10. [kassambara/ggpubr](https://github.com/kassambara/ggpubr) (Required for combining the heatmap plots together, included in CRAN)
 
+11. [thomasp85/patchwork](https://github.com/thomasp85/patchwork) (Required for combining other figures together)
+
+12. [david-barnett/microViz](https://github.com/david-barnett/microViz) (Required for easier Phyloseq object manipulation)
+ 
+13. [EmilHvitfeldt/paletteer](https://github.com/EmilHvitfeldt/paletteer) (Required for using specific colour palettes for the heatmaps)
+
 To run the markdown script, you additionally need:
 
-11. [rstudio/rmarkdown](https://github.com/rstudio/rmarkdown) (Required to execute and write markdown scripts in R, included in CRAN)
+14. [rstudio/rmarkdown](https://github.com/rstudio/rmarkdown) (Required to execute and write markdown scripts in R, included in CRAN)
 
-12. [haozhu233/kableExtra](https://github.com/haozhu233/kableExtra) (Required for customizing interactive tables)
+15. [haozhu233/kableExtra](https://github.com/haozhu233/kableExtra) (Required for customizing interactive tables)
 
-13. [rstudio/leaflet](https://github.com/rstudio/leaflet) (Required for generating interactive maps, included in CRAN)
+16. [rstudio/leaflet](https://github.com/rstudio/leaflet) (Required for generating interactive maps, included in CRAN)
 
 To install the required packages, execute this code:
 ```
@@ -137,6 +145,8 @@ install.packages("sf")
 install.packages("rworldmap")
 install.packages("rnaturalearth")
 install.packages("ggpubr")
+install.packages("patchwork")
+install.packages("microViz")
 install.packages("rmarkdown")
 install.packages("kableExtra")
 install.packages("leaflet")
@@ -150,24 +160,17 @@ install.packages("leaflet")
 
 When running the pipeline on a large dataset, such as the FunAqua one, it is recommended to run the pipeline on an RStudio Server due to the high computational requirements, particularly during the sequencing depth analysis (e.g., rarefaction curve generation).
 
-* Minimum recommended RAM: 32 GB
+* Minimum recommended RAM: 40 GB
 
-* RAM usage: Up to ~25 GB during rarefaction curve generation; ~18–20 GB when idle
+* RAM usage: Up to ~35-40 GB during some more intensive processes; ~18–20 GB when idle
 
-* Disk space: The R environment with all data produced by the pipeline requires approximately 4 GB
+* Disk space: The R environment with all data produced by the pipeline requires approximately 20 GB
 
 The pipeline is designed to minimize the amount of data stored in the R environment. Wherever possible, data manipulation is performed within the calling function rather than pre-generating and saving intermediate objects. For example, contingency tables are created directly inside ggplot() calls instead of being stored beforehand.
 Note: The RMarkdown document does not save any files into the R environment.
 
 </details>
 
-<details> <summary>The example data</summary>
-	
-#### The example files
-
-This repository contains smaller [example files](./example_data) for pipeline testing. The samples were chosen to ensure continental representativity, meaning each continent is represented in proportion to its share of the overall dataset. When running the pipeline with the smaller example files, please change the file names in the file import section to their correct names.
-
-</details>
 
 <details> <summary> Usage notes</summary>
 	
@@ -192,5 +195,4 @@ When using the example dataset or other data, additionally confirm:
 * The raw sequencing data is available on European Nucleotide Archive under bioproject XXXX
 
 ## Citation
-
-##
+Prins, V., FunAqua concortium, & Panksep, K. (2026). Global Fungal Biodiversity Dataset (FunAqua) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.20509884 
