@@ -190,9 +190,10 @@ When using the example dataset or other data, additionally confirm:
 
 ## Data availability
 
-* The dataset together with sample metadata, OTU data and taxonomic classifications is available on Zenodo (tobecited)
+* The dataset together with sample metadata, OTU data and taxonomic classifications is available on Zenodo:
+ Prins, V., FunAqua consortium, & Panksep, K. (2025). Global Fungal Biodiversity Dataset (FunAqua) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.17855266
 
-* The raw sequencing data is available on European Nucleotide Archive under bioproject XXXX
+* The raw sequencing data is available on European Nucleotide Archive under bioproject PRJEB104083 (Run Accessions ERR15968726 – ERR15971436). 
 
 ## Citation
-Prins, V., FunAqua concortium, & Panksep, K. (2026). Global Fungal Biodiversity Dataset (FunAqua) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.20509884 
+Prins, V., Tedersoo, L., Mikryukov, V. et al. The FunAqua dataset of global fungal biodiversity in aquatic ecosystems. Sci Data 13, 1346 (2026). https://doi.org/10.1038/s41597-026-07729-8
